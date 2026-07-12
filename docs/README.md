@@ -11,6 +11,7 @@ This folder contains project reference and evaluation material that should stay 
 - `FINAL_CHECKLIST.md`: final demo, verification, and presentation checklist
 - `EASY_RUN_GUIDE.md`: simple end-to-end setup and run steps
 - `TESTING_GUIDE.md`: practical testing steps before the final demo
+- `RENDER_DEPLOYMENT.md`: Render cloud deployment step-by-step instructions
 
 ## Usage
 
