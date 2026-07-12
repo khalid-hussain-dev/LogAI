@@ -2,17 +2,19 @@
 
 LogAI is a full-stack log monitoring platform that combines ingestion, anomaly detection, live updates, search, server management, and alert delivery in a single workspace.
 
-This repository is organized as a project workspace rather than a single app. The active system is split into a backend stack in `LogAI-Backend-main` and a React frontend in `LogAI-Frontend-Navroz-Frontend`, with deployment assets, testing utilities, and reference docs living alongside them.
+This repository is organized as a unified monorepo. The active system is split into a Python FastAPI `backend`, a Node.js `auth-service`, and a React `frontend` dashboard, with a root-level `docker-compose.yml` to spin up the entire local runtime stack in a single command.
 
 ## What This Workspace Contains
 
 | Path | Role |
 | --- | --- |
-| `LogAI-Backend-main` | Active backend stack: FastAPI API, Redis stream worker, Node OAuth service, Fluentd, Docker Compose, PostgreSQL, Elasticsearch, Redis, and NGINX config |
-| `LogAI-Frontend-Navroz-Frontend` | Active React + Vite dashboard frontend |
-| `deploy` | Docker Compose demo notes and testing utilities |
-| `docs` | Architecture notes, run guides, model notes, and supporting project documentation |
-| `legacy` | Older frontend snapshot retained for reference only |
+| `backend` | Python FastAPI backend (app, db models, anomaly detection scoring services, and background stream workers) |
+| `frontend` | React + Vite UI dashboard with modern glassmorphism design and real-time visualization |
+| `auth-service` | Node.js OAuth microservice for Google and GitHub credentials dance |
+| `fluentd` | Collector service for http, forward protocol, and syslog telemetry streams |
+| `docker-compose.yml` | Multi-container Docker orchestration to boot local databases (PostgreSQL, Redis, Elasticsearch), services, and NGINX |
+| `deploy` | Kubernetes manifests, smoke testing suites, and load test scripts |
+| `docs` | System architecture guides, model specs, run docs, and Render deployment manuals |
 
 ## Core Capabilities
 
@@ -28,10 +30,10 @@ This repository is organized as a project workspace rather than a single app. Th
 
 ## System Overview
 
-LogAI currently runs as two coordinated application layers:
+LogAI currently runs as coordinated service layers:
 
-1. `LogAI-Backend-main` provides the backend services and infrastructure entry points.
-2. `LogAI-Frontend-Navroz-Frontend` provides the user-facing dashboard used to manage servers, inspect logs, view analytics, and configure integrations.
+1. Root `docker-compose.yml` orchestrates PostgreSQL, Redis, Elasticsearch, Fluentd, NGINX, the FastAPI backend, Node auth service, and stream workers.
+2. The `frontend/` React dashboard provides the operational command console.
 
 The runtime stack includes:
 
@@ -137,7 +139,6 @@ The active frontend includes the following shipped pages and flows:
 From the workspace root:
 
 ```powershell
-cd LogAI-Backend-main
 copy env.example .env
 ```
 
@@ -169,7 +170,7 @@ docker compose exec backend alembic upgrade head
 Open a second terminal:
 
 ```powershell
-cd ..\LogAI-Frontend-Navroz-Frontend
+cd frontend
 npm install
 npm run dev
 ```
@@ -237,22 +238,21 @@ python deploy/testing/ingest_load_test.py --api-key YOUR_API_KEY --requests 300 
 ```text
 LogAI -- Log Monitoring Dashboard/
 |-- README.md
-|-- LogAI-Backend-main/
-|   |-- docker-compose.yml
-|   |-- env.example
-|   |-- backend/
-|   |   `-- app/
-|   |-- auth-service/
-|   |-- fluentd/
-|   |-- docker/
-|   `-- shipper/
-|-- LogAI-Frontend-Navroz-Frontend/
+|-- docker-compose.yml
+|-- env.example
+|-- backend/
+|   `-- app/
+|-- frontend/
 |   |-- src/
-|   |-- Dockerfile
 |   `-- vite.config.js
+|-- auth-service/
+|-- fluentd/
+|-- docker/
+|-- shipper/
 |-- deploy/
 |   |-- LOCAL_DEMO.md
 |   `-- testing/
+```
 |-- docs/
 |   |-- ARCHITECTURE.md
 |   |-- ARCHITECTURE_FLOW.mmd
@@ -282,8 +282,8 @@ LogAI -- Log Monitoring Dashboard/
 ### Deployment assets
 
 - `deploy/LOCAL_DEMO.md` documents the preferred local demo flow
-- `LogAI-Frontend-Navroz-Frontend/Dockerfile` builds the frontend as a static NGINX site
-- `LogAI-Backend-main/docker/nginx/nginx.conf` provides the reverse-proxy entry point used by the backend stack
+- `frontend/Dockerfile` builds the frontend as a static NGINX site
+- `docker/nginx/nginx.conf` provides the reverse-proxy entry point used by the backend stack
 
 ## Useful Docs
 
@@ -301,7 +301,6 @@ LogAI -- Log Monitoring Dashboard/
 Check the core containers:
 
 ```powershell
-cd LogAI-Backend-main
 docker compose logs -f backend
 docker compose logs -f stream-worker
 docker compose logs -f auth-service
@@ -339,6 +338,6 @@ Email delivery requires SMTP configuration in the backend environment:
 
 ## Notes
 
-- The active code paths are the backend workspace in `LogAI-Backend-main` and the frontend workspace in `LogAI-Frontend-Navroz-Frontend`.
+- The active code paths are the FastAPI service in `backend/`, the Node auth service in `auth-service/`, and the React frontend in `frontend/`.
 - The `legacy` folder is reference material and should not be treated as the primary frontend.
 - The architecture doc intentionally separates direct API ingestion from collector-based worker ingestion so the data flow reflects the current implementation.
