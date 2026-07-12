@@ -7,7 +7,6 @@ venv/
 env/
 ENV/
 bin/
-lib/
 lib64/
 include/
 share/
