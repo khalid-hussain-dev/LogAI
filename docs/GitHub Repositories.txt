@@ -1,0 +1,5 @@
+LogAI -- AI Powered Log Monitoring Dasboard
+
+Frontend: https://github.com/naumankhalid-dev/LogAI-Frontend.git
+
+Backend: https://github.com/naumankhalid-dev/LogAI-Backend.git

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="860" height="340" preserveAspectRatio="xMinYMin meet" viewBox="0 0 860 340" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="860" height="340"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-340)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="40" y="200" width="220" height="110" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(85%,91%,99%); fill-rule: evenodd;"/>
+			<text x="138.6975" y="292" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,584) scale(1,-1)">users</text>
+			<text x="48" y="276" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,552) scale(1,-1)">id (UUID)</text>
+			<text x="48" y="264" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,528) scale(1,-1)">name</text>
+			<text x="48" y="252" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,504) scale(1,-1)">email</text>
+			<text x="48" y="240" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,480) scale(1,-1)">hashed_password</text>
+			<text x="48" y="228" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,456) scale(1,-1)">auth_provider</text>
+			<text x="48" y="216" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,432) scale(1,-1)">created_at / updated_at</text>
+			<rect x="320" y="200" width="220" height="110" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(86%,98%,90%); fill-rule: evenodd;"/>
+			<text x="414.424" y="292" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,584) scale(1,-1)">servers</text>
+			<text x="328" y="276" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,552) scale(1,-1)">id (UUID)</text>
+			<text x="328" y="264" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,528) scale(1,-1)">name</text>
+			<text x="328" y="252" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,504) scale(1,-1)">description</text>
+			<text x="328" y="240" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,480) scale(1,-1)">api_key</text>
+			<text x="328" y="228" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,456) scale(1,-1)">owner_id -&gt; users.id</text>
+			<text x="328" y="216" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,432) scale(1,-1)">is_active</text>
+			<rect x="600" y="200" width="220" height="110" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(100%,89%,90%); fill-rule: evenodd;"/>
+			<text x="671.5055" y="292" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,584) scale(1,-1)">alert_integrations</text>
+			<text x="608" y="276" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,552) scale(1,-1)">owner_id -&gt; users.id</text>
+			<text x="608" y="264" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,528) scale(1,-1)">slack/email/webhook flags</text>
+			<text x="608" y="252" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,504) scale(1,-1)">recipient URLs</text>
+			<text x="608" y="240" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,480) scale(1,-1)">minimum_anomaly_score</text>
+			<rect x="320" y="40" width="220" height="110" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(99%,95%,78%); fill-rule: evenodd;"/>
+			<text x="373.944" y="132" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,264) scale(1,-1)">logai-logs (Elasticsearch)</text>
+			<text x="328" y="116" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,232) scale(1,-1)">id</text>
+			<text x="328" y="104" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,208) scale(1,-1)">server_id</text>
+			<text x="328" y="92" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,184) scale(1,-1)">level</text>
+			<text x="328" y="80" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,160) scale(1,-1)">message</text>
+			<text x="328" y="68" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,136) scale(1,-1)">anomaly</text>
+			<text x="328" y="56" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,112) scale(1,-1)">anomaly_score</text>
+			<path d="M 260,255 L 320,255 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="320 255, 314 258, 314 252" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="282.5" y="261.0" style="font-family: Times-Roman; font-size: 7.5px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,522) scale(1,-1)">1 : N</text>
+			<path d="M 150,200 L 150,160 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="150 160, 153 166, 147 166" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<path d="M 150,160 L 600,255 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="600 255, 593.5097 256.696, 594.7491 250.8253" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="368.3325" y="213.5" style="font-family: Times-Roman; font-size: 7.5px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,427) scale(1,-1)">1 : 1</text>
+			<path d="M 430,200 L 430,150 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="430 150, 433 156, 427 156" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="422.5" y="181.0" style="font-family: Times-Roman; font-size: 7.5px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,362) scale(1,-1)">1 : N</text>
+			<text x="100.568" y="145" style="font-family: Times-Roman; font-size: 8px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,290) scale(1,-1)">one user owns one alert profile</text>
+			<text x="363.68" y="135" style="font-family: Times-Roman; font-size: 8px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,270) scale(1,-1)">one server produces many log documents</text>
+		</g>
+	</g>
+</svg>

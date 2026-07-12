@@ -1,0 +1,74 @@
+###############################################################################
+# LogAI Agent — Drop this into any project to ship logs to your LogAI dashboard
+#
+# SETUP:
+#   1. Create a server on your LogAI dashboard → copy the Server ID
+#   2. Copy this file + env-logai.example into your project root
+#   3. Create .env file with LOGAI_HOST, LOGAI_SERVER_ID, LOGAI_SERVER_NAME
+#   4. Add labels + logging to each service in YOUR docker-compose.yml (see examples below)
+#   5. Run: docker compose -f docker-compose.yml -f docker-compose-logai.yml up -d
+#
+# HOW IT WORKS:
+#   Docker containers → Fluentd logging driver → LogAI backend Fluentd (port 24224)
+#   → Redis → Stream Worker → Elasticsearch → Dashboard (real-time via WebSocket)
+###############################################################################
+
+# Reusable logging config — reference this in your services with: logging: *logai-logging
+x-logai-logging: &logai-logging
+  driver: fluentd
+  options:
+    # Point to the LogAI backend's Fluentd
+    fluentd-address: "${LOGAI_HOST:-localhost}:24224"
+    # Tag format: logai.<container_name>
+    tag: "logai.{{.Name}}"
+    # Pass these Docker labels as Fluentd fields
+    labels: "logai_server_id,logai_server_name"
+    # Don't block the container if Fluentd is temporarily unreachable
+    fluentd-async: "true"
+    fluentd-retry-wait: "1s"
+    fluentd-max-retries: "30"
+
+services:
+  # ─────────────────────────────────────────────────────────
+  # EXAMPLE: Override your services to add LogAI logging
+  # Replace "your-app" with your actual service name(s)
+  # ─────────────────────────────────────────────────────────
+  #
+  # your-app:
+  #   labels:
+  #     logai_server_id: "${LOGAI_SERVER_ID}"
+  #     logai_server_name: "${LOGAI_SERVER_NAME:-My App}"
+  #   logging: *logai-logging
+  #
+  # your-database:
+  #   labels:
+  #     logai_server_id: "${LOGAI_SERVER_ID}"
+  #     logai_server_name: "${LOGAI_SERVER_NAME:-My App}"
+  #   logging: *logai-logging
+  #
+  # ─────────────────────────────────────────────────────────
+
+  # Demo app that generates logs to prove the pipeline works
+  logai-demo:
+    image: alpine:latest
+    container_name: logai-demo-app
+    labels:
+      logai_server_id: "${LOGAI_SERVER_ID}"
+      logai_server_name: "${LOGAI_SERVER_NAME:-Demo App}"
+    logging: *logai-logging
+    entrypoint: /bin/sh
+    command:
+      - -c
+      - |
+        echo '{"level":"info","message":"LogAI agent connected - logs are flowing!"}'
+        i=0
+        while true; do
+          i=$$((i + 1))
+          case $$((i % 10)) in
+            0) echo '{"level":"error","message":"Database connection timeout after 5000ms","service":"db-pool","host":"'$$(hostname)'"}' ;;
+            5) echo '{"level":"warn","message":"High memory usage: 87% on worker process","service":"monitor","host":"'$$(hostname)'"}' ;;
+            *) echo '{"level":"info","message":"Request processed successfully in '$$((RANDOM % 200 + 10))'ms","service":"api","host":"'$$(hostname)'"}' ;;
+          esac
+          sleep ${LOG_INTERVAL:-2}
+        done
+    restart: unless-stopped

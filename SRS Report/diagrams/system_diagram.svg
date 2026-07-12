@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="860" height="470" preserveAspectRatio="xMinYMin meet" viewBox="0 0 860 470" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="860" height="470"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-470)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="25" y="355" width="160" height="70" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(85%,91%,99%); fill-rule: evenodd;"/>
+			<text x="56.116" y="407" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,814) scale(1,-1)">Applications / Servers</text>
+			<text x="33" y="391" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,782) scale(1,-1)">Custom apps, shippers,</text>
+			<text x="33" y="379" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,758) scale(1,-1)">and monitored services</text>
+			<rect x="25" y="245" width="160" height="70" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(99%,95%,78%); fill-rule: evenodd;"/>
+			<text x="64.2065" y="297" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,594) scale(1,-1)">Fluentd Collectors</text>
+			<text x="33" y="281" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,562) scale(1,-1)">Forward, HTTP, and</text>
+			<text x="33" y="269" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,538) scale(1,-1)">syslog input paths</text>
+			<rect x="220" y="355" width="170" height="70" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(86%,98%,90%); fill-rule: evenodd;"/>
+			<text x="261.9185" y="407" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,814) scale(1,-1)">FastAPI Ingest API</text>
+			<text x="228" y="391" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,782) scale(1,-1)">Single and batch ingest</text>
+			<text x="228" y="379" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,758) scale(1,-1)">protected by API keys</text>
+			<rect x="220" y="245" width="170" height="70" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(99%,95%,78%); fill-rule: evenodd;"/>
+			<text x="262.6775" y="297" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,594) scale(1,-1)">Redis Stream / List</text>
+			<text x="228" y="281" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,562) scale(1,-1)">Durable event buffering</text>
+			<text x="228" y="269" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,538) scale(1,-1)">for asynchronous</text>
+			<text x="228" y="257" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,514) scale(1,-1)">processing</text>
+			<rect x="220" y="120" width="170" height="80" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(100%,89%,90%); fill-rule: evenodd;"/>
+			<text x="243.389" y="182" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,364) scale(1,-1)">Auth Service + PostgreSQL</text>
+			<text x="228" y="166" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,332) scale(1,-1)">JWT/OAuth flows,</text>
+			<text x="228" y="154" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,308) scale(1,-1)">users, servers, and</text>
+			<text x="228" y="142" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,284) scale(1,-1)">alert settings</text>
+			<rect x="430" y="280" width="170" height="90" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(85%,91%,99%); fill-rule: evenodd;"/>
+			<text x="461.65" y="352" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,704) scale(1,-1)">Stream Worker + Parser</text>
+			<text x="438" y="336" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,672) scale(1,-1)">Normalize logs, parse</text>
+			<text x="438" y="324" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,648) scale(1,-1)">formats, and coordinate</text>
+			<text x="438" y="312" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,624) scale(1,-1)">scoring</text>
+			<rect x="430" y="155" width="170" height="90" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(86%,98%,90%); fill-rule: evenodd;"/>
+			<text x="445.139" y="227" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,454) scale(1,-1)">Anomaly + Notification Engine</text>
+			<text x="438" y="211" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,422) scale(1,-1)">Isolation Forest with</text>
+			<text x="438" y="199" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,398) scale(1,-1)">statistical fallback and</text>
+			<text x="438" y="187" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,374) scale(1,-1)">outbound alerts</text>
+			<rect x="640" y="310" width="180" height="80" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(85%,91%,99%); fill-rule: evenodd;"/>
+			<text x="700.982" y="372" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,744) scale(1,-1)">Elasticsearch</text>
+			<text x="648" y="356" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,712) scale(1,-1)">Search, analytics,</text>
+			<text x="648" y="344" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,688) scale(1,-1)">and dashboard history</text>
+			<rect x="640" y="205" width="180" height="70" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(99%,95%,78%); fill-rule: evenodd;"/>
+			<text x="666.244" y="257" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,514) scale(1,-1)">Redis Pub/Sub + WebSocket</text>
+			<text x="648" y="241" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,482) scale(1,-1)">Live logs and anomalies</text>
+			<text x="648" y="229" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,458) scale(1,-1)">for connected dashboards</text>
+			<rect x="640" y="95" width="180" height="70" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(86%,98%,90%); fill-rule: evenodd;"/>
+			<text x="696.241" y="147" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,294) scale(1,-1)">React Frontend</text>
+			<text x="648" y="131" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,262) scale(1,-1)">Dashboard, logs, alerts,</text>
+			<text x="648" y="119" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,238) scale(1,-1)">analytics, chat,</text>
+			<text x="648" y="107" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,214) scale(1,-1)">integrations</text>
+			<rect x="640" y="10" width="180" height="55" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(100%,89%,90%); fill-rule: evenodd;"/>
+			<text x="674.6975" y="47" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,94) scale(1,-1)">Slack / Email / Webhook</text>
+			<text x="648" y="31" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,62) scale(1,-1)">Outbound anomaly alerts</text>
+			<path d="M 185,390 L 220,390 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="220 390, 214 393, 214 387" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="184.065" y="396.0" style="font-family: Times-Roman; font-size: 7.5px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,792) scale(1,-1)">direct ingest</text>
+			<path d="M 185,280 L 220,280 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="220 280, 214 283, 214 277" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="178.44375" y="286.0" style="font-family: Times-Roman; font-size: 7.5px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,572) scale(1,-1)">collector stream</text>
+			<path d="M 305,355 L 305,315 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="305 315, 308 321, 302 321" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<path d="M 390,280 L 430,325 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="430 325, 423.7716 322.5086, 428.256 318.5225" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="396.66875" y="308.5" style="font-family: Times-Roman; font-size: 7.5px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,617) scale(1,-1)">consume</text>
+			<path d="M 390,390 L 430,325 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="430 325, 429.4104 331.6822, 424.3004 328.5377" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="394.6925" y="363.5" style="font-family: Times-Roman; font-size: 7.5px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,727) scale(1,-1)">score path</text>
+			<path d="M 515,280 L 515,245 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="515 245, 518 251, 512 251" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<path d="M 600,325 L 640,350 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="640 350, 633.322 349.364, 636.502 344.276" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="611.6675" y="343.5" style="font-family: Times-Roman; font-size: 7.5px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,687) scale(1,-1)">index</text>
+			<path d="M 600,235 L 640,235 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="640 235, 634 238, 634 232" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="608.95625" y="241.0" style="font-family: Times-Roman; font-size: 7.5px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,482) scale(1,-1)">publish</text>
+			<path d="M 730,205 L 730,165 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="730 165, 733 171, 727 171" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="720.0025" y="191.0" style="font-family: Times-Roman; font-size: 7.5px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,382) scale(1,-1)">stream</text>
+			<path d="M 600,195 L 640,40 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="640 40, 641.4056 46.5593, 635.5959 45.06003" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="611.04125" y="123.5" style="font-family: Times-Roman; font-size: 7.5px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,247) scale(1,-1)">notify</text>
+			<path d="M 390,155 L 430,195 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="430 195, 423.636 192.8787, 427.8787 188.636" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="396.3575" y="181.0" style="font-family: Times-Roman; font-size: 7.5px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,362) scale(1,-1)">auth data</text>
+			<path d="M 390,160 L 640,130 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="640 130, 634.4002 133.6935, 633.6853 127.7362" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="505.83125" y="151.0" style="font-family: Times-Roman; font-size: 7.5px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,302) scale(1,-1)">REST</text>
+		</g>
+	</g>
+</svg>

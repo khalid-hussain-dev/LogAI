@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="860" height="370" preserveAspectRatio="xMinYMin meet" viewBox="0 0 860 370" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="860" height="370"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-370)" style="clip-path: url(#clip)">
+		<g transform="">
+			<circle cx="70" cy="260" r="22" style="stroke: rgb(5%,9%,16%); stroke-linecap: butt; stroke-width: 1; fill: none; fill-rule: evenodd;"/>
+			<path d="M 70,238 L 70,190 Z" style="stroke: rgb(5%,9%,16%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 50,225 L 90,225 Z" style="stroke: rgb(5%,9%,16%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 70,190 L 50,160 Z" style="stroke: rgb(5%,9%,16%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 70,190 L 90,160 Z" style="stroke: rgb(5%,9%,16%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="60.56" y="145" style="font-family: Times-Roman; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,290) scale(1,-1)">User</text>
+			<circle cx="70" cy="80" r="22" style="stroke: rgb(5%,9%,16%); stroke-linecap: butt; stroke-width: 1; fill: none; fill-rule: evenodd;"/>
+			<path d="M 70,58 L 70,20 Z" style="stroke: rgb(5%,9%,16%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 50,45 L 90,45 Z" style="stroke: rgb(5%,9%,16%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 70,20 L 50,-10 Z" style="stroke: rgb(5%,9%,16%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 70,20 L 90,-10 Z" style="stroke: rgb(5%,9%,16%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="43.2" y="-25" style="font-family: Times-Roman; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,-50) scale(1,-1)">External App</text>
+			<rect x="190" y="255" width="165" height="52" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(85%,91%,99%); fill-rule: evenodd;"/>
+			<text x="244.395" y="289" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,578) scale(1,-1)">Authenticate</text>
+			<text x="198" y="273" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,546) scale(1,-1)">Sign up, login,</text>
+			<text x="198" y="261" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,522) scale(1,-1)">refresh tokens</text>
+			<rect x="385" y="255" width="165" height="52" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(86%,98%,90%); fill-rule: evenodd;"/>
+			<text x="431.915" y="289" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,578) scale(1,-1)">Manage Servers</text>
+			<text x="393" y="273" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,546) scale(1,-1)">Create servers,</text>
+			<text x="393" y="261" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,522) scale(1,-1)">rotate keys</text>
+			<rect x="580" y="255" width="165" height="52" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(99%,95%,78%); fill-rule: evenodd;"/>
+			<text x="625.386" y="289" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,578) scale(1,-1)">View Dashboard</text>
+			<text x="588" y="273" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,546) scale(1,-1)">Read KPIs, live logs,</text>
+			<text x="588" y="261" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,522) scale(1,-1)">and server health</text>
+			<rect x="190" y="165" width="165" height="52" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(86%,98%,90%); fill-rule: evenodd;"/>
+			<text x="245.1595" y="199" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,398) scale(1,-1)">Search Logs</text>
+			<text x="198" y="183" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,366) scale(1,-1)">Filter, paginate,</text>
+			<text x="198" y="171" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,342) scale(1,-1)">and inspect events</text>
+			<rect x="385" y="165" width="165" height="52" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(100%,89%,90%); fill-rule: evenodd;"/>
+			<text x="436.799" y="199" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,398) scale(1,-1)">Inspect Alerts</text>
+			<text x="393" y="183" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,366) scale(1,-1)">Review anomalies</text>
+			<text x="393" y="171" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,342) scale(1,-1)">and active events</text>
+			<rect x="580" y="165" width="165" height="52" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(85%,91%,99%); fill-rule: evenodd;"/>
+			<text x="625.177" y="199" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,398) scale(1,-1)">Analytics + Chat</text>
+			<text x="588" y="183" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,366) scale(1,-1)">Charts, trends,</text>
+			<text x="588" y="171" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,342) scale(1,-1)">and log Q&amp;A</text>
+			<rect x="385" y="75" width="165" height="52" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(99%,95%,78%); fill-rule: evenodd;"/>
+			<text x="417.549" y="109" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,218) scale(1,-1)">Configure Integrations</text>
+			<text x="393" y="93" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,186) scale(1,-1)">Slack, email,</text>
+			<text x="393" y="81" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,162) scale(1,-1)">webhook settings</text>
+			<rect x="190" y="20" width="165" height="52" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(86%,98%,90%); fill-rule: evenodd;"/>
+			<text x="249.125" y="54" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,108) scale(1,-1)">Send Logs</text>
+			<text x="198" y="38" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,76) scale(1,-1)">Single or batch</text>
+			<text x="198" y="26" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,52) scale(1,-1)">API ingest</text>
+			<rect x="580" y="20" width="165" height="52" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(100%,89%,90%); fill-rule: evenodd;"/>
+			<text x="614.6885" y="54" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,108) scale(1,-1)">Receive Notifications</text>
+			<text x="588" y="38" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,76) scale(1,-1)">Outbound anomaly</text>
+			<text x="588" y="26" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,52) scale(1,-1)">delivery</text>
+			<path d="M 95,225 L 190,280 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="190 280, 183.3043 279.5901, 186.3106 274.3975" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<path d="M 95,225 L 385,280 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="385 280, 378.5461 281.8295, 379.6641 275.9345" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<path d="M 95,225 L 580,280 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="580 280, 573.7002 282.3048, 574.3763 276.343" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<path d="M 95,225 L 190,190 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="190 190, 185.4071 194.8893, 183.3328 189.2592" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<path d="M 95,225 L 385,190 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="385 190, 379.4027 193.6973, 378.6838 187.7405" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<path d="M 95,225 L 580,190 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="580 190, 574.2315 193.4241, 573.7996 187.4396" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<path d="M 95,225 L 385,100 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="385 100, 380.6775 105.1299, 378.3026 99.62" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<path d="M 95,80 L 190,45 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="190 45, 185.4071 49.88926, 183.3328 44.2592" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<path d="M 745,45 L 820,45 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="820 45, 814 48, 814 42" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="781.81" y="60" style="font-family: Times-Roman; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,120) scale(1,-1)">Alert Channel</text>
+		</g>
+	</g>
+</svg>

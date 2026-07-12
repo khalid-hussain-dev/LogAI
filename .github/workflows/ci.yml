@@ -1,0 +1,125 @@
+name: LogAI CI/CD Starter
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  frontend-build:
+    name: Frontend Build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: LogAI-Frontend-Navroz-Frontend
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: LogAI-Frontend-Navroz-Frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Build active frontend
+        run: npm run build
+
+      - name: Upload frontend artifact
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: logai-frontend-dist
+          path: LogAI-Frontend-Navroz-Frontend/dist
+
+  backend-validation:
+    name: Backend Validation
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: LogAI-Backend-main/backend
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install backend dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Compile backend source
+        run: python -m compileall app
+
+      - name: Import FastAPI application
+        env:
+          JWT_SECRET_KEY: ci-demo-secret
+        run: python -c "from app.main import app; print(app.title)"
+
+  auth-service-validation:
+    name: Auth Service Validation
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: LogAI-Backend-main/auth-service
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: LogAI-Backend-main/auth-service/package-lock.json
+
+      - name: Install auth service dependencies
+        run: npm ci
+
+      - name: Syntax check auth service
+        run: node --check index.js
+
+  docker-validation:
+    name: Docker Build Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build backend image
+        run: docker build -t logai/backend:ci LogAI-Backend-main/backend
+
+      - name: Build auth service image
+        run: docker build -t logai/auth-service:ci LogAI-Backend-main/auth-service
+
+      - name: Build frontend image
+        run: docker build -t logai/frontend:ci LogAI-Frontend-Navroz-Frontend
+
+  deployment-bundle:
+    name: Package Deployment Bundle
+    if: github.event_name == 'workflow_dispatch'
+    needs:
+      - frontend-build
+      - backend-validation
+      - auth-service-validation
+      - docker-validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Upload deployment bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: logai-deployment-bundle
+          path: |
+            README.md
+            deploy

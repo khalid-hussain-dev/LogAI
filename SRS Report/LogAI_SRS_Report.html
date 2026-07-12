@@ -1,0 +1,671 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LogAI | AI-Powered Log Monitoring Dashboard - SRS Report</title>
+  <style>
+    :root {
+      --navy: #0f172a;
+      --blue: #1d4ed8;
+      --sky: #dbeafe;
+      --green: #dcfce7;
+      --amber: #fef3c7;
+      --rose: #ffe4e6;
+      --light: #f8fafc;
+      --border: #cbd5e1;
+      --ink: #111827;
+      --muted: #475569;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: linear-gradient(180deg, #eef4ff 0%, #f8fafc 32%, #ffffff 100%);
+      color: var(--ink);
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+    }
+    .page {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 42px 32px 80px;
+    }
+    .hero {
+      background: radial-gradient(circle at top left, #dbeafe 0%, #ffffff 55%);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 36px;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+      margin-bottom: 28px;
+    }
+    .hero h1 {
+      margin: 0 0 6px;
+      font-size: 2.4rem;
+      color: var(--navy);
+    }
+    .hero h2 {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--blue);
+    }
+    .hero-logo {
+      width: 110px;
+      height: 110px;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto 18px;
+    }
+    .hero-kicker {
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    .hero-meta {
+      max-width: 720px;
+      margin: 18px auto 0;
+      text-align: center;
+      color: var(--navy);
+    }
+    .hero-meta p {
+      margin: 4px 0;
+    }
+    .hero-members {
+      margin-top: 20px;
+    }
+    .hero-members table {
+      margin-bottom: 0;
+      font-size: 0.92rem;
+    }
+    .hero-members th {
+      background: #e7eefb;
+    }
+    .hero p {
+      margin: 12px 0 0;
+      color: var(--muted);
+    }
+    .toc {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 22px 24px;
+      margin-bottom: 26px;
+    }
+    .toc h3, section h3 {
+      margin-top: 0;
+      color: var(--navy);
+    }
+    .toc a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+    .toc ol { margin: 0; padding-left: 20px; }
+    section {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 26px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+    }
+    h3 {
+      font-size: 1.5rem;
+      margin-bottom: 12px;
+    }
+    h4 {
+      margin: 22px 0 8px;
+      color: var(--blue);
+    }
+    p { margin: 0 0 10px; }
+    ul { margin-top: 8px; }
+    .note {
+      border-left: 5px solid var(--blue);
+      background: #eef5ff;
+      padding: 14px 16px;
+      border-radius: 12px;
+      color: var(--navy);
+      margin: 14px 0 20px;
+    }
+    .figure {
+      background: var(--light);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      margin: 16px 0 10px;
+      overflow: auto;
+    }
+    .caption {
+      font-size: 0.92rem;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 20px;
+      font-size: 0.95rem;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      vertical-align: top;
+    }
+    th {
+      background: #eff6ff;
+      color: var(--navy);
+      text-align: left;
+    }
+    .screen-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+    .screen-card {
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .screen-card h4 { margin-top: 0; }
+    .gantt td.active {
+      background: #bfdbfe;
+      color: #0f172a;
+      font-weight: 600;
+      text-align: center;
+    }
+    .gantt td.idle {
+      background: #ffffff;
+    }
+    @media print {
+      body { background: white; }
+      .page { padding: 0; max-width: none; }
+      .hero, .toc, section {
+        box-shadow: none;
+        border-color: #d6dbe3;
+      }
+      a { color: inherit; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="hero">
+      <img class="hero-logo" src="assets/university_logo.png" alt="University Logo" />
+      <div class="hero-kicker">Sir Syed University of Engineering &amp; Technology</div>
+      <h1>Software Requirements Specification (SRS)</h1>
+      <h2>LogAI | AI-Powered Log Monitoring Dashboard</h2>
+      <div class="hero-meta">
+        <p><strong>Computer Engineering Department</strong></p>
+        <p>B.S. in Computer Engineering, Batch 2022F</p>
+        <p><strong>Internal Advisor:</strong> ______________________________</p>
+        <p><strong>Date:</strong> May 29, 2026</p>
+      </div>
+      <div class="hero-members">
+        <p><strong>Project Team</strong></p>
+        <table><thead><tr><th>Name</th><th>Roll No</th><th>Section</th><th>Role</th><th>Contact</th></tr></thead><tbody><tr><td>Khalid Hussain</td><td>2022F-BCE-130</td><td>B</td><td>Group Leader</td><td>03322425697</td></tr><tr><td>Nauman Khalid</td><td>2022F-BCE-147</td><td>A</td><td>Member</td><td>03295658357</td></tr><tr><td>Ahmed Sartaj</td><td>2022F-BCE-212</td><td>A</td><td>Member</td><td>03303092753</td></tr><tr><td>Nauroz Saleem</td><td>2022F-BCE-150</td><td>A</td><td>Member</td><td>03032809169</td></tr></tbody></table>
+      </div>
+    </div>
+
+    <div class="toc">
+      <h3>Contents</h3>
+      <ol>
+        <li><a href="#intro">1.1 Introduction</a></li>
+        <li><a href="#purpose">1.1.1 Product Purpose</a></li>
+        <li><a href="#scope">1.1.2 Product Scope</a></li>
+        <li><a href="#system">1.1.3 System Diagram and Description</a></li>
+        <li><a href="#stakeholders">1.1.4 Project Stakeholders</a></li>
+        <li><a href="#wbs">1.1.5 Project WBS and Gantt Chart</a></li>
+        <li><a href="#assumptions">1.1.6 Assumptions and Constraints</a></li>
+        <li><a href="#functional">1.2 Project Functional Requirements</a></li>
+        <li><a href="#functional">1.2.1.1 Chat Assistant Details</a></li>
+        <li><a href="#nonfunctional">1.3 Project Non-Functional Requirements</a></li>
+        <li><a href="#nonfunctional">1.3.7 Verification and Testing Strategy</a></li>
+        <li><a href="#nonfunctional">1.3.8 Risks and Mitigation</a></li>
+        <li><a href="#methodology">1.4 Software Design Methodology</a></li>
+        <li><a href="#interfaces">1.5 External Interface Requirements</a></li>
+        <li><a href="#er">1.6 Entity Relationship Diagram</a></li>
+        <li><a href="#sequence">1.7 Sequence Diagram</a></li>
+        <li><a href="#future">1.8 Future Improvements</a></li>
+      </ol>
+    </div>
+
+    <section id="intro">
+      <h3>1.1 Introduction</h3>
+      <p>LogAI is a web-based observability platform designed to centralize log ingestion, real-time monitoring, anomaly detection, alerting, and analytics for modern software systems.</p><p>The system combines a React frontend, a FastAPI backend, a dedicated Node.js auth service, Redis-based streaming, Elasticsearch-based search and analytics, PostgreSQL-based user metadata, and containerized deployment assets.</p><p>This SRS documents the current product requirements, interfaces, architecture, and design expectations for the final year project build. Performance values in this report are acceptance targets and should be validated against the live stack during the final verification run.</p>
+      <h4 id="purpose">1.1.1 Product Purpose</h4>
+      <p>The purpose of LogAI is to help operations teams, developers, and system administrators collect, observe, and analyze application logs from multiple sources in one place.</p><p>The system is intended to shorten debugging time, improve operational awareness, surface anomalies quickly, and provide a cleaner workflow for log search, live monitoring, and outbound alerting.</p>
+      <h4 id="scope">1.1.2 Product Scope</h4>
+      <p>LogAI supports secure user authentication, monitored server registration, API-key-based log ingest, Fluentd-based collection, log parsing, anomaly scoring, real-time streaming to the dashboard, search and filtering, analytics, alert integrations, and a lightweight chat assistant that explains log context.</p><p>The current build also includes starter CI/CD, Docker Compose deployment assets, a reusable testing layer, and an Isolation Forest based anomaly engine with a statistical fallback path.</p>
+      <div class="note">
+        This report documents the implemented product requirements and the expected final verification criteria.
+        Sections such as performance evidence and final screenshots should be updated after the live test run.
+      </div>
+    </section>
+
+    <section id="system">
+      <h3>1.1.3 System Diagram and Description</h3>
+      <div class="figure"><?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="860" height="470" preserveAspectRatio="xMinYMin meet" viewBox="0 0 860 470" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="860" height="470"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-470)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="25" y="355" width="160" height="70" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(85%,91%,99%); fill-rule: evenodd;"/>
+			<text x="56.116" y="407" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,814) scale(1,-1)">Applications / Servers</text>
+			<text x="33" y="391" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,782) scale(1,-1)">Custom apps, shippers,</text>
+			<text x="33" y="379" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,758) scale(1,-1)">and monitored services</text>
+			<rect x="25" y="245" width="160" height="70" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(99%,95%,78%); fill-rule: evenodd;"/>
+			<text x="64.2065" y="297" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,594) scale(1,-1)">Fluentd Collectors</text>
+			<text x="33" y="281" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,562) scale(1,-1)">Forward, HTTP, and</text>
+			<text x="33" y="269" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,538) scale(1,-1)">syslog input paths</text>
+			<rect x="220" y="355" width="170" height="70" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(86%,98%,90%); fill-rule: evenodd;"/>
+			<text x="261.9185" y="407" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,814) scale(1,-1)">FastAPI Ingest API</text>
+			<text x="228" y="391" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,782) scale(1,-1)">Single and batch ingest</text>
+			<text x="228" y="379" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,758) scale(1,-1)">protected by API keys</text>
+			<rect x="220" y="245" width="170" height="70" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(99%,95%,78%); fill-rule: evenodd;"/>
+			<text x="262.6775" y="297" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,594) scale(1,-1)">Redis Stream / List</text>
+			<text x="228" y="281" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,562) scale(1,-1)">Durable event buffering</text>
+			<text x="228" y="269" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,538) scale(1,-1)">for asynchronous</text>
+			<text x="228" y="257" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,514) scale(1,-1)">processing</text>
+			<rect x="220" y="120" width="170" height="80" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(100%,89%,90%); fill-rule: evenodd;"/>
+			<text x="243.389" y="182" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,364) scale(1,-1)">Auth Service + PostgreSQL</text>
+			<text x="228" y="166" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,332) scale(1,-1)">JWT/OAuth flows,</text>
+			<text x="228" y="154" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,308) scale(1,-1)">users, servers, and</text>
+			<text x="228" y="142" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,284) scale(1,-1)">alert settings</text>
+			<rect x="430" y="280" width="170" height="90" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(85%,91%,99%); fill-rule: evenodd;"/>
+			<text x="461.65" y="352" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,704) scale(1,-1)">Stream Worker + Parser</text>
+			<text x="438" y="336" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,672) scale(1,-1)">Normalize logs, parse</text>
+			<text x="438" y="324" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,648) scale(1,-1)">formats, and coordinate</text>
+			<text x="438" y="312" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,624) scale(1,-1)">scoring</text>
+			<rect x="430" y="155" width="170" height="90" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(86%,98%,90%); fill-rule: evenodd;"/>
+			<text x="445.139" y="227" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,454) scale(1,-1)">Anomaly + Notification Engine</text>
+			<text x="438" y="211" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,422) scale(1,-1)">Isolation Forest with</text>
+			<text x="438" y="199" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,398) scale(1,-1)">statistical fallback and</text>
+			<text x="438" y="187" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,374) scale(1,-1)">outbound alerts</text>
+			<rect x="640" y="310" width="180" height="80" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(85%,91%,99%); fill-rule: evenodd;"/>
+			<text x="700.982" y="372" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,744) scale(1,-1)">Elasticsearch</text>
+			<text x="648" y="356" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,712) scale(1,-1)">Search, analytics,</text>
+			<text x="648" y="344" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,688) scale(1,-1)">and dashboard history</text>
+			<rect x="640" y="205" width="180" height="70" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(99%,95%,78%); fill-rule: evenodd;"/>
+			<text x="666.244" y="257" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,514) scale(1,-1)">Redis Pub/Sub + WebSocket</text>
+			<text x="648" y="241" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,482) scale(1,-1)">Live logs and anomalies</text>
+			<text x="648" y="229" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,458) scale(1,-1)">for connected dashboards</text>
+			<rect x="640" y="95" width="180" height="70" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(86%,98%,90%); fill-rule: evenodd;"/>
+			<text x="696.241" y="147" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,294) scale(1,-1)">React Frontend</text>
+			<text x="648" y="131" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,262) scale(1,-1)">Dashboard, logs, alerts,</text>
+			<text x="648" y="119" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,238) scale(1,-1)">analytics, chat,</text>
+			<text x="648" y="107" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,214) scale(1,-1)">integrations</text>
+			<rect x="640" y="10" width="180" height="55" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(100%,89%,90%); fill-rule: evenodd;"/>
+			<text x="674.6975" y="47" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,94) scale(1,-1)">Slack / Email / Webhook</text>
+			<text x="648" y="31" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,62) scale(1,-1)">Outbound anomaly alerts</text>
+			<path d="M 185,390 L 220,390 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="220 390, 214 393, 214 387" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="184.065" y="396.0" style="font-family: Times-Roman; font-size: 7.5px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,792) scale(1,-1)">direct ingest</text>
+			<path d="M 185,280 L 220,280 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="220 280, 214 283, 214 277" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="178.44375" y="286.0" style="font-family: Times-Roman; font-size: 7.5px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,572) scale(1,-1)">collector stream</text>
+			<path d="M 305,355 L 305,315 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="305 315, 308 321, 302 321" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<path d="M 390,280 L 430,325 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="430 325, 423.7716 322.5086, 428.256 318.5225" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="396.66875" y="308.5" style="font-family: Times-Roman; font-size: 7.5px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,617) scale(1,-1)">consume</text>
+			<path d="M 390,390 L 430,325 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="430 325, 429.4104 331.6822, 424.3004 328.5377" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="394.6925" y="363.5" style="font-family: Times-Roman; font-size: 7.5px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,727) scale(1,-1)">score path</text>
+			<path d="M 515,280 L 515,245 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="515 245, 518 251, 512 251" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<path d="M 600,325 L 640,350 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="640 350, 633.322 349.364, 636.502 344.276" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="611.6675" y="343.5" style="font-family: Times-Roman; font-size: 7.5px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,687) scale(1,-1)">index</text>
+			<path d="M 600,235 L 640,235 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="640 235, 634 238, 634 232" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="608.95625" y="241.0" style="font-family: Times-Roman; font-size: 7.5px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,482) scale(1,-1)">publish</text>
+			<path d="M 730,205 L 730,165 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="730 165, 733 171, 727 171" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="720.0025" y="191.0" style="font-family: Times-Roman; font-size: 7.5px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,382) scale(1,-1)">stream</text>
+			<path d="M 600,195 L 640,40 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="640 40, 641.4056 46.5593, 635.5959 45.06003" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="611.04125" y="123.5" style="font-family: Times-Roman; font-size: 7.5px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,247) scale(1,-1)">notify</text>
+			<path d="M 390,155 L 430,195 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="430 195, 423.636 192.8787, 427.8787 188.636" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="396.3575" y="181.0" style="font-family: Times-Roman; font-size: 7.5px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,362) scale(1,-1)">auth data</text>
+			<path d="M 390,160 L 640,130 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="640 130, 634.4002 133.6935, 633.6853 127.7362" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="505.83125" y="151.0" style="font-family: Times-Roman; font-size: 7.5px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,302) scale(1,-1)">REST</text>
+		</g>
+	</g>
+</svg>
+</div>
+      <div class="caption">Figure 1: LogAI system diagram</div>
+      <ul><li>Applications and servers submit logs either directly to the FastAPI ingest API or through Fluentd collectors.</li><li>Redis Streams and Redis Lists decouple ingestion from processing so the stream worker can parse, score, and route logs reliably.</li><li>The anomaly engine evaluates each log entry, then indexed logs are stored in Elasticsearch while live updates are published to Redis Pub/Sub.</li><li>The React dashboard consumes historical data through REST APIs and live updates through the WebSocket endpoint.</li><li>When anomalies exceed a configured threshold, outbound notifications can be dispatched through Slack, email, and generic webhooks.</li></ul>
+    </section>
+
+    <section id="stakeholders">
+      <h3>1.1.4 Project Stakeholders</h3>
+      <table><thead><tr><th>Stakeholder</th><th>Role / Interest</th></tr></thead><tbody><tr><td>DevOps Engineers / SREs</td><td>Primary users who monitor infrastructure health, incidents, and log anomalies.</td></tr><tr><td>Software Developers</td><td>Investigate errors, search logs, and use analytics and chat assistance during debugging.</td></tr><tr><td>System Administrators</td><td>Maintain the deployment, configure infrastructure, rotate keys, and manage environments.</td></tr><tr><td>Project Team</td><td>Responsible for requirements, implementation, documentation, and future improvement of the system.</td></tr><tr><td>Project Advisor / Academic Evaluators</td><td>Review system scope, architecture, correctness, testing, and deliverables.</td></tr><tr><td>Cloud / Hosting Providers</td><td>Provide the runtime resources used by the databases, backend services, and frontend deployment.</td></tr><tr><td>Alert Delivery Services</td><td>Slack workspaces, SMTP providers, and webhook receivers that deliver anomaly notifications.</td></tr></tbody></table>
+    </section>
+
+    <section id="wbs">
+      <h3>1.1.5 Project WBS and Gantt Chart</h3>
+      <h4>Work Breakdown Structure</h4>
+      <table><thead><tr><th>WBS</th><th>Work Package</th><th>Description</th></tr></thead><tbody><tr><td>1.0</td><td>Requirement analysis and proposal alignment</td><td>Clarify scope, required features, and evaluation milestones.</td></tr><tr><td>2.0</td><td>Backend platform</td><td>Authentication, server management, ingest routes, search, analytics, and chat APIs.</td></tr><tr><td>3.0</td><td>Frontend dashboard</td><td>Connected user interface for dashboard, logs, alerts, analytics, servers, chat, and integrations.</td></tr><tr><td>4.0</td><td>Real-time pipeline</td><td>Redis streams, stream worker, WebSocket live updates, and anomaly event propagation.</td></tr><tr><td>5.0</td><td>Deployment structure</td><td>Docker Compose stack, CI/CD starter, and workspace cleanup.</td></tr><tr><td>6.0</td><td>Alerting and AI/ML</td><td>Slack/email/webhook integrations and Isolation Forest anomaly scoring.</td></tr><tr><td>7.0</td><td>Testing and documentation</td><td>Smoke tests, load tests, architecture notes, run guides, and report artifacts.</td></tr></tbody></table>
+      <h4>Phase-wise Gantt overview</h4>
+      <table class='gantt'><thead><tr><th>Task</th><th>P1</th><th>P2</th><th>P3</th><th>P4</th><th>P5</th><th>P6</th><th>P7</th></tr></thead><tbody><tr><td>Requirement analysis</td><td class='active'>Active</td><td class='idle'></td><td class='idle'></td><td class='idle'></td><td class='idle'></td><td class='idle'></td><td class='idle'></td></tr><tr><td>Backend core implementation</td><td class='active'>Active</td><td class='active'>Active</td><td class='idle'></td><td class='idle'></td><td class='idle'></td><td class='idle'></td><td class='idle'></td></tr><tr><td>Frontend integration and UX</td><td class='idle'></td><td class='active'>Active</td><td class='active'>Active</td><td class='active'>Active</td><td class='idle'></td><td class='idle'></td><td class='idle'></td></tr><tr><td>Real-time pipeline</td><td class='idle'></td><td class='active'>Active</td><td class='active'>Active</td><td class='idle'></td><td class='idle'></td><td class='idle'></td><td class='idle'></td></tr><tr><td>Deployment and repo structure</td><td class='idle'></td><td class='idle'></td><td class='active'>Active</td><td class='active'>Active</td><td class='idle'></td><td class='idle'></td><td class='idle'></td></tr><tr><td>Alerting and integrations</td><td class='idle'></td><td class='idle'></td><td class='idle'></td><td class='idle'></td><td class='active'>Active</td><td class='idle'></td><td class='idle'></td></tr><tr><td>AI/ML upgrade</td><td class='idle'></td><td class='idle'></td><td class='idle'></td><td class='idle'></td><td class='idle'></td><td class='active'>Active</td><td class='idle'></td></tr><tr><td>Hardening, testing, documentation</td><td class='idle'></td><td class='idle'></td><td class='idle'></td><td class='idle'></td><td class='idle'></td><td class='idle'></td><td class='active'>Active</td></tr></tbody></table>
+      <div class="caption">P1 to P7 correspond to the seven project phases used to structure the implementation roadmap.</div>
+    </section>
+
+    <section id="assumptions">
+      <h3>1.1.6 Assumptions and Constraints</h3>
+      <ul><li>The deployment environment provides Docker Desktop or an equivalent container runtime for the local stack.</li><li>Node.js 18+ and Python 3.11+ are available when frontend development and local testing scripts must be run outside containers.</li><li>SMTP, Slack, webhook, and OAuth behavior depends on valid third-party credentials being supplied through environment variables.</li><li>The current deployment path is Docker Compose for local and demo execution.</li><li>The current chat assistant is retrieval and rule based; it should not be described as a general-purpose foundation model.</li><li>Final performance numbers and screenshots depend on a live system test pass and are not fully measurable from static code inspection alone.</li></ul>
+    </section>
+
+    <section id="functional">
+      <h3>1.2 Project Functional Requirements</h3>
+      <h4>1.2.1 Project Functional Features</h4>
+      <table><thead><tr><th>ID</th><th>Requirement</th><th>Description</th><th>Priority</th></tr></thead><tbody><tr><td>FR-01</td><td>User registration and login</td><td>The system shall support local email/password signup, login, logout, token refresh, and profile retrieval.</td><td>High</td></tr><tr><td>FR-02</td><td>OAuth callback support</td><td>The system shall support Google and GitHub OAuth redirection through the auth service.</td><td>Medium</td></tr><tr><td>FR-03</td><td>Server management</td><td>The system shall allow an authenticated user to create, list, soft-delete, and rotate API keys for monitored servers.</td><td>High</td></tr><tr><td>FR-04</td><td>Single log ingest</td><td>The system shall accept a single log entry through an API-key-protected ingest endpoint.</td><td>High</td></tr><tr><td>FR-05</td><td>Batch log ingest</td><td>The system shall accept up to 1000 log entries in one batch request.</td><td>High</td></tr><tr><td>FR-06</td><td>Collector-based ingest</td><td>The system shall support Fluentd and Redis-based pipeline ingest in addition to direct API ingest.</td><td>High</td></tr><tr><td>FR-07</td><td>Log parsing and normalization</td><td>The system shall parse common raw log formats and normalize them into a shared searchable structure.</td><td>High</td></tr><tr><td>FR-08</td><td>Real-time streaming</td><td>The system shall push new logs and anomalies to connected dashboard clients through WebSocket updates.</td><td>High</td></tr><tr><td>FR-09</td><td>Search and filtering</td><td>The system shall let users query logs by server, severity, anomaly flag, text search, and time range.</td><td>High</td></tr><tr><td>FR-10</td><td>Dashboard metrics</td><td>The system shall present 24-hour overview metrics, severity breakdowns, hourly activity, and per-server health summaries.</td><td>High</td></tr><tr><td>FR-11</td><td>Analytics views</td><td>The system shall provide detailed server metrics, anomaly counts, severity charts, and trend data.</td><td>High</td></tr><tr><td>FR-12</td><td>Alert management</td><td>The system shall display anomaly events and support live alert updates in the frontend.</td><td>High</td></tr><tr><td>FR-13</td><td>Outbound integrations</td><td>The system shall allow users to configure Slack, email, and webhook channels and send test notifications.</td><td>High</td></tr><tr><td>FR-14</td><td>AI-assisted chat</td><td>The system shall let users ask questions about their logs and receive Elasticsearch-backed contextual responses derived from recent indexed data.</td><td>Medium</td></tr><tr><td>FR-15</td><td>Deployment assets</td><td>The system shall include Docker-based local deployment assets for repeatable setup and demo execution.</td><td>Medium</td></tr><tr><td>FR-16</td><td>Testing support</td><td>The system shall include smoke-test and ingest load-test utilities for final verification.</td><td>Medium</td></tr></tbody></table>
+      <h4>1.2.1.1 Chat Assistant Details</h4>
+      <ul><li>The current chat feature is not a hosted large language model integration in the deployed build.</li><li>It works by querying Elasticsearch for recent logs relevant to the user&#x27;s message, then composing a contextual response through rule-based response logic in the backend.</li><li>Its data source is therefore the user&#x27;s own indexed log history, filtered by owned servers and recent time windows.</li><li>This makes the current build deterministic, lightweight, and fully local to the project stack, while still giving useful debugging assistance.</li></ul>
+      <h4>1.2.2 Operating Environment</h4>
+      <table><thead><tr><th>Environment Item</th><th>Current Build Expectation</th></tr></thead><tbody><tr><td>Client browser</td><td>Chrome, Edge, or Firefox on Windows, Linux, or macOS</td></tr><tr><td>Frontend runtime</td><td>Node.js 18+ during development, static frontend served by NGINX in deployment</td></tr><tr><td>Backend runtime</td><td>Python 3.11+ for FastAPI backend and stream worker</td></tr><tr><td>Auth runtime</td><td>Node.js service for OAuth and callback handling</td></tr><tr><td>Primary databases</td><td>PostgreSQL 16, Elasticsearch 8.x, Redis 7</td></tr><tr><td>Collection layer</td><td>Fluentd with forward, HTTP, and syslog inputs</td></tr><tr><td>Container environment</td><td>Docker Desktop / Docker Compose for local stack execution</td></tr><tr><td>Network prerequisites</td><td>HTTP/HTTPS access plus database, Redis, and collector ports where applicable</td></tr></tbody></table>
+      <h4>1.2.3 UX Prototype</h4>
+      <div class="figure"><?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="860" height="300" preserveAspectRatio="xMinYMin meet" viewBox="0 0 860 300" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="860" height="300"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-300)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="30" y="30" width="800" height="230" rx="10" ry="10" style="stroke: rgb(79%,83%,88%); stroke-linecap: butt; stroke-width: 1; fill: rgb(97%,98%,98%); fill-rule: evenodd;"/>
+			<rect x="30" y="30" width="165" height="230" style="stroke: rgb(5%,9%,16%); stroke-linecap: butt; stroke-width: 1; fill: rgb(5%,9%,16%); fill-rule: evenodd;"/>
+			<text x="52" y="228" style="font-family: Times-Roman; font-size: 9.5px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,456) scale(1,-1)">Dashboard</text>
+			<text x="52" y="206" style="font-family: Times-Roman; font-size: 9.5px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,412) scale(1,-1)">Logs</text>
+			<text x="52" y="184" style="font-family: Times-Roman; font-size: 9.5px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,368) scale(1,-1)">Alerts</text>
+			<text x="52" y="162" style="font-family: Times-Roman; font-size: 9.5px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,324) scale(1,-1)">Analytics</text>
+			<text x="52" y="140" style="font-family: Times-Roman; font-size: 9.5px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,280) scale(1,-1)">Servers</text>
+			<text x="52" y="118" style="font-family: Times-Roman; font-size: 9.5px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,236) scale(1,-1)">Chat</text>
+			<text x="52" y="96" style="font-family: Times-Roman; font-size: 9.5px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,192) scale(1,-1)">Integrations</text>
+			<text x="52" y="74" style="font-family: Times-Roman; font-size: 9.5px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,148) scale(1,-1)">Docs</text>
+			<text x="52" y="52" style="font-family: Times-Roman; font-size: 9.5px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,104) scale(1,-1)">Settings</text>
+			<rect x="215" y="200" width="590" height="35" style="stroke: rgb(79%,83%,88%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="235" y="213" style="font-family: Times-Roman; font-size: 10px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,426) scale(1,-1)">Overview Header + Filters</text>
+			<rect x="225" y="145" width="160" height="40" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1; fill: rgb(85%,91%,99%); fill-rule: evenodd;"/>
+			<rect x="420" y="145" width="160" height="40" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1; fill: rgb(85%,91%,99%); fill-rule: evenodd;"/>
+			<rect x="615" y="145" width="160" height="40" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1; fill: rgb(85%,91%,99%); fill-rule: evenodd;"/>
+			<text x="255" y="162" style="font-family: Times-Roman; font-size: 9px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,324) scale(1,-1)">KPI Card</text>
+			<text x="450" y="162" style="font-family: Times-Roman; font-size: 9px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,324) scale(1,-1)">KPI Card</text>
+			<text x="645" y="162" style="font-family: Times-Roman; font-size: 9px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,324) scale(1,-1)">KPI Card</text>
+			<rect x="225" y="65" width="360" height="65" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1; fill: rgb(86%,98%,90%); fill-rule: evenodd;"/>
+			<text x="303.475" y="100" style="font-family: Times-Roman; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,200) scale(1,-1)">Charts / Trends / Live Activity</text>
+			<rect x="605" y="65" width="180" height="65" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1; fill: rgb(99%,95%,78%); fill-rule: evenodd;"/>
+			<text x="646.115" y="100" style="font-family: Times-Roman; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,200) scale(1,-1)">Live Logs / Alerts Panel</text>
+		</g>
+	</g>
+</svg>
+</div>
+      <div class="caption">Figure 2: Representative frontend layout prototype based on the current page structure</div>
+      <div class='screen-grid'><div class='screen-card'><h4>Authentication</h4><p>Login and signup flow with local auth and OAuth callback support.</p></div><div class='screen-card'><h4>Dashboard</h4><p>Overview cards, live logs, anomaly preview, and per-server summary.</p></div><div class='screen-card'><h4>Logs</h4><p>Search, filters, pagination, and anomaly-only exploration.</p></div><div class='screen-card'><h4>Alerts</h4><p>Live anomaly view with server scoping and feed behavior.</p></div><div class='screen-card'><h4>Analytics</h4><p>Trend charts, severity breakdowns, and anomaly metrics.</p></div><div class='screen-card'><h4>Servers</h4><p>Create/list servers, view API keys, and manage monitored systems.</p></div><div class='screen-card'><h4>Integrations</h4><p>Configure Slack/email/webhook delivery and send test alerts.</p></div><div class='screen-card'><h4>Chat</h4><p>Ask log-related questions and receive contextual responses.</p></div></div>
+    </section>
+
+    <section id="nonfunctional">
+      <h3>1.3 Project Non-Functional Requirements</h3>
+      <h4>1.3.1 Performance Evaluation</h4>
+      <div class="note">The following values are acceptance targets for the final verification pass. Actual results should be inserted after running the live smoke and load tests.</div>
+      <table><thead><tr><th>Metric</th><th>Acceptance Target</th></tr></thead><tbody><tr><td>Health endpoint response</td><td>&lt; 1 second under normal local deployment load</td></tr><tr><td>Single ingest request</td><td>&lt; 500 ms average under light load</td></tr><tr><td>Batch ingest limit</td><td>Up to 1000 log entries per request</td></tr><tr><td>Dashboard overview query</td><td>&lt; 3 seconds for the 24-hour aggregate view</td></tr><tr><td>Log search query</td><td>&lt; 2 seconds for common filtered queries with paginated output</td></tr><tr><td>WebSocket live update delivery</td><td>Visible in the frontend within 2 seconds after processing</td></tr><tr><td>Notification dispatch</td><td>&lt; 10 seconds for configured Slack/email/webhook channels</td></tr><tr><td>Load-test baseline</td><td>Support a local benchmark run of at least 200-300 ingest requests using the included test script</td></tr></tbody></table>
+      <h4>1.3.2 Safety Requirements</h4>
+      <ul><li>The system shall never perform destructive remediation actions automatically on monitored infrastructure.</li><li>The system shall preserve log evidence and anomaly metadata even when live streaming is temporarily unavailable.</li><li>The system shall fail gracefully by returning informative errors instead of silently dropping authenticated user actions.</li><li>The system shall continue using the statistical anomaly fallback when the ML model is not trained or unavailable.</li></ul>
+      <h4>1.3.3 Security Requirements</h4>
+      <ul><li>JWT access and refresh tokens shall be used for authenticated user APIs.</li><li>Passwords shall be stored as bcrypt hashes and never persisted in plain text.</li><li>API-key-based ingest shall be isolated per monitored server.</li><li>User access to servers, metrics, logs, and integrations shall be scoped to owned resources only.</li><li>Rate limiting shall be applied to sensitive API flows such as ingest traffic.</li><li>Secrets such as JWT keys, OAuth credentials, SMTP credentials, and webhook URLs shall be supplied through environment variables or secret stores.</li><li>Production deployment should enable HTTPS/TLS at the reverse-proxy layer.</li></ul>
+      <h4>1.3.4 Business Perspective / Requirements</h4>
+      <ul><li>LogAI addresses a practical observability need for student projects, internal systems, and small to medium operational teams that need centralized log visibility without a large commercial stack.</li><li>The product reduces manual debugging effort by combining live streams, stored history, analytics, anomaly scoring, and outbound alerting in one workflow.</li><li>The platform is intentionally modular so future work can add richer ML, hosted deployment hardening, or organization-level roles without redesigning the whole system.</li></ul>
+      <h4>1.3.5 Licensing Requirements</h4>
+      <ul><li>The current build depends on open-source frameworks and libraries such as React, FastAPI, SQLAlchemy, Redis clients, Elasticsearch clients, and report/test tooling.</li><li>Any public distribution of the project should include a top-level project license and third-party attribution review before release.</li><li>External services such as Slack, SMTP providers, and cloud infrastructure remain subject to their own service terms and licenses.</li></ul>
+      <h4>1.3.6 Legal Copyrights and Notices</h4>
+      <ul><li>Organizations deploying LogAI remain responsible for the legality of collected log data, retention policies, and privacy obligations.</li><li>The system may process sensitive operational or personal data if applications emit it into logs; therefore, deployers should implement masking, retention limits, and access controls appropriate to their context.</li><li>Evidence, alerts, and exported diagnostics should be handled according to local security policies and any applicable data-protection regulations.</li></ul>
+      <h4>1.3.7 Verification and Testing Strategy</h4>
+      <table><thead><tr><th>ID</th><th>Validation Area</th><th>Expected Check</th><th>Method</th></tr></thead><tbody><tr><td>TS-01</td><td>Health verification</td><td>Validate backend health and auth health endpoints before feature testing.</td><td>Automated smoke test</td></tr><tr><td>TS-02</td><td>Authentication flow</td><td>Verify signup, login, token refresh, logout, and OAuth callback behavior.</td><td>Manual bug bash</td></tr><tr><td>TS-03</td><td>Server lifecycle</td><td>Create servers, list them, and rotate keys without cross-user access leakage.</td><td>Manual + API check</td></tr><tr><td>TS-04</td><td>Ingest validation</td><td>Send single and batch logs with valid API keys and confirm persistence.</td><td>Manual + smoke test</td></tr><tr><td>TS-05</td><td>WebSocket validation</td><td>Confirm live logs and anomaly events reach the dashboard in real time.</td><td>Manual live test</td></tr><tr><td>TS-06</td><td>Analytics and alerts</td><td>Validate alert feed, metrics pages, and anomaly counters against ingested data.</td><td>Manual live test</td></tr><tr><td>TS-07</td><td>Integration delivery</td><td>Save Slack/email/webhook configuration and send a synthetic test notification.</td><td>Manual live test</td></tr><tr><td>TS-08</td><td>Anomaly-model validation</td><td>Warm the model with at least 100 logs and compare fallback vs ML-active behavior.</td><td>Manual live test</td></tr><tr><td>TS-09</td><td>Load testing</td><td>Run the ingest load test script and record throughput plus latency metrics.</td><td>Automated load test</td></tr></tbody></table>
+      <h4>1.3.8 Risks and Mitigation</h4>
+      <table><thead><tr><th>Risk ID</th><th>Risk</th><th>Impact</th><th>Mitigation</th></tr></thead><tbody><tr><td>R-01</td><td>Backend or database service failure</td><td>Dashboard pages may fail to load or ingest may stop.</td><td>Use health checks, container restarts, and service-level logs to detect and recover quickly.</td></tr><tr><td>R-02</td><td>High ingest load</td><td>Queue build-up, slower indexing, or delayed live updates.</td><td>Use Redis buffering, batch indexing, load testing, and future horizontal scaling.</td></tr><tr><td>R-03</td><td>Notification channel misconfiguration</td><td>Important anomaly alerts may not be delivered.</td><td>Provide test-send flows, readiness indicators, and per-channel configuration validation.</td></tr><tr><td>R-04</td><td>Model false positives or false negatives</td><td>Users may miss incidents or get noisy alerts.</td><td>Keep statistical fallback, tune thresholds, and document model warm-up behavior.</td></tr><tr><td>R-05</td><td>Invalid or noisy log payloads</td><td>Parsed data quality and analytics accuracy may degrade.</td><td>Normalize formats, support raw preservation, and store metadata for later inspection.</td></tr><tr><td>R-06</td><td>Secret leakage or weak configuration</td><td>Unauthorized access to APIs or third-party integrations.</td><td>Use environment variables, secret stores, API key rotation, and JWT-based access control.</td></tr></tbody></table>
+    </section>
+
+    <section id="methodology">
+      <h3>1.4 Software Design Methodology</h3>
+      <p>The system follows a modular, service-oriented design with clear separation between user-facing frontend flows, API orchestration, asynchronous stream processing, storage layers, and alert delivery.</p><p>Development is aligned with an iterative and incremental approach: core backend services, connected frontend flows, live streaming, deployment structure, alerting, AI/ML upgrade, and final hardening were introduced in phases.</p><p>The backend uses REST for historical and administrative operations, WebSocket for live updates, Redis for event movement and rate limiting, Elasticsearch for search and analytics, and PostgreSQL for user-owned metadata.</p>
+      <h4>1.4.1 Data Dictionary / Data Set</h4>
+      <h4>Relational entities</h4><table><thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>users.id</td><td>UUID</td><td>Primary key for each user.</td></tr><tr><td>users.name</td><td>String(255)</td><td>Display name of the user.</td></tr><tr><td>users.email</td><td>String(255)</td><td>Unique login and contact identity.</td></tr><tr><td>users.hashed_password</td><td>String(255)</td><td>Bcrypt-hashed password for local auth.</td></tr><tr><td>users.picture</td><td>String(1024)</td><td>Optional avatar URL.</td></tr><tr><td>users.auth_provider</td><td>Enum</td><td>Authentication source: local, google, or github.</td></tr><tr><td>users.oauth_id</td><td>String(255)</td><td>Optional OAuth provider identifier.</td></tr><tr><td>users.is_active</td><td>Boolean</td><td>Soft-active flag for the account.</td></tr><tr><td>servers.id</td><td>UUID</td><td>Primary key for each monitored server/application.</td></tr><tr><td>servers.name</td><td>String(255)</td><td>Display name of the monitored server.</td></tr><tr><td>servers.description</td><td>Text</td><td>Optional descriptive notes.</td></tr><tr><td>servers.api_key</td><td>String(255)</td><td>Unique API key used for log ingestion.</td></tr><tr><td>servers.owner_id</td><td>UUID</td><td>Foreign key to the owning user.</td></tr><tr><td>servers.is_active</td><td>Boolean</td><td>Soft-active flag for the server.</td></tr><tr><td>alert_integrations.owner_id</td><td>UUID</td><td>Unique foreign key linking one integration profile to one user.</td></tr><tr><td>alert_integrations.slack_enabled</td><td>Boolean</td><td>Enables Slack notifications.</td></tr><tr><td>alert_integrations.slack_webhook_url</td><td>String(1024)</td><td>Slack Incoming Webhook URL.</td></tr><tr><td>alert_integrations.email_enabled</td><td>Boolean</td><td>Enables email notifications.</td></tr><tr><td>alert_integrations.email_recipients</td><td>Text</td><td>Comma-separated email recipients.</td></tr><tr><td>alert_integrations.webhook_enabled</td><td>Boolean</td><td>Enables generic webhook delivery.</td></tr><tr><td>alert_integrations.webhook_url</td><td>String(1024)</td><td>Webhook endpoint URL.</td></tr><tr><td>alert_integrations.minimum_anomaly_score</td><td>Float</td><td>Threshold required before outbound alerting.</td></tr></tbody></table><h4>Log index dataset</h4><table><thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>logai-logs.id</td><td>keyword</td><td>Unique log document identifier.</td></tr><tr><td>logai-logs.server_id</td><td>keyword</td><td>Owning server identifier.</td></tr><tr><td>logai-logs.server_name</td><td>keyword</td><td>Human-readable server name.</td></tr><tr><td>logai-logs.level</td><td>keyword</td><td>Normalized severity level.</td></tr><tr><td>logai-logs.message</td><td>text + keyword</td><td>Primary searchable log message.</td></tr><tr><td>logai-logs.source</td><td>keyword</td><td>Logger or collector source.</td></tr><tr><td>logai-logs.host</td><td>keyword</td><td>Origin host name.</td></tr><tr><td>logai-logs.service</td><td>keyword</td><td>Application service or subsystem.</td></tr><tr><td>logai-logs.environment</td><td>keyword</td><td>Environment tag such as dev/staging/prod.</td></tr><tr><td>logai-logs.meta</td><td>object</td><td>Dynamic structured metadata payload.</td></tr><tr><td>logai-logs.raw</td><td>text</td><td>Original raw message when preserved.</td></tr><tr><td>logai-logs.anomaly</td><td>boolean</td><td>Boolean anomaly classification.</td></tr><tr><td>logai-logs.anomaly_score</td><td>float</td><td>0..1 anomaly score.</td></tr><tr><td>logai-logs.timestamp</td><td>date</td><td>Primary event time in epoch millis.</td></tr><tr><td>logai-logs.ingested_at</td><td>date</td><td>Time the system accepted the record.</td></tr><tr><td>logai-logs.processed_by</td><td>keyword</td><td>Pipeline source such as api-direct, stream, or fluentd.</td></tr></tbody></table>
+      <h4>1.4.2 Design Models [along with descriptions]</h4>
+      <table><thead><tr><th>Model</th><th>Purpose</th></tr></thead><tbody><tr><td>System architecture model</td><td>Describes the high-level components and data paths from sources to dashboards and alert channels.</td></tr><tr><td>Use case model</td><td>Shows how authenticated users, monitored applications, and notification channels interact with the system.</td></tr><tr><td>Entity relationship model</td><td>Defines the persistent ownership relationships between users, servers, alert integrations, and log documents.</td></tr><tr><td>Sequence model</td><td>Explains the order of calls during a log-ingest-to-dashboard event.</td></tr></tbody></table>
+      <div class="figure"><?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="860" height="370" preserveAspectRatio="xMinYMin meet" viewBox="0 0 860 370" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="860" height="370"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-370)" style="clip-path: url(#clip)">
+		<g transform="">
+			<circle cx="70" cy="260" r="22" style="stroke: rgb(5%,9%,16%); stroke-linecap: butt; stroke-width: 1; fill: none; fill-rule: evenodd;"/>
+			<path d="M 70,238 L 70,190 Z" style="stroke: rgb(5%,9%,16%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 50,225 L 90,225 Z" style="stroke: rgb(5%,9%,16%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 70,190 L 50,160 Z" style="stroke: rgb(5%,9%,16%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 70,190 L 90,160 Z" style="stroke: rgb(5%,9%,16%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="60.56" y="145" style="font-family: Times-Roman; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,290) scale(1,-1)">User</text>
+			<circle cx="70" cy="80" r="22" style="stroke: rgb(5%,9%,16%); stroke-linecap: butt; stroke-width: 1; fill: none; fill-rule: evenodd;"/>
+			<path d="M 70,58 L 70,20 Z" style="stroke: rgb(5%,9%,16%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 50,45 L 90,45 Z" style="stroke: rgb(5%,9%,16%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 70,20 L 50,-10 Z" style="stroke: rgb(5%,9%,16%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 70,20 L 90,-10 Z" style="stroke: rgb(5%,9%,16%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="43.2" y="-25" style="font-family: Times-Roman; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,-50) scale(1,-1)">External App</text>
+			<rect x="190" y="255" width="165" height="52" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(85%,91%,99%); fill-rule: evenodd;"/>
+			<text x="244.395" y="289" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,578) scale(1,-1)">Authenticate</text>
+			<text x="198" y="273" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,546) scale(1,-1)">Sign up, login,</text>
+			<text x="198" y="261" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,522) scale(1,-1)">refresh tokens</text>
+			<rect x="385" y="255" width="165" height="52" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(86%,98%,90%); fill-rule: evenodd;"/>
+			<text x="431.915" y="289" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,578) scale(1,-1)">Manage Servers</text>
+			<text x="393" y="273" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,546) scale(1,-1)">Create servers,</text>
+			<text x="393" y="261" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,522) scale(1,-1)">rotate keys</text>
+			<rect x="580" y="255" width="165" height="52" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(99%,95%,78%); fill-rule: evenodd;"/>
+			<text x="625.386" y="289" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,578) scale(1,-1)">View Dashboard</text>
+			<text x="588" y="273" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,546) scale(1,-1)">Read KPIs, live logs,</text>
+			<text x="588" y="261" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,522) scale(1,-1)">and server health</text>
+			<rect x="190" y="165" width="165" height="52" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(86%,98%,90%); fill-rule: evenodd;"/>
+			<text x="245.1595" y="199" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,398) scale(1,-1)">Search Logs</text>
+			<text x="198" y="183" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,366) scale(1,-1)">Filter, paginate,</text>
+			<text x="198" y="171" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,342) scale(1,-1)">and inspect events</text>
+			<rect x="385" y="165" width="165" height="52" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(100%,89%,90%); fill-rule: evenodd;"/>
+			<text x="436.799" y="199" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,398) scale(1,-1)">Inspect Alerts</text>
+			<text x="393" y="183" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,366) scale(1,-1)">Review anomalies</text>
+			<text x="393" y="171" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,342) scale(1,-1)">and active events</text>
+			<rect x="580" y="165" width="165" height="52" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(85%,91%,99%); fill-rule: evenodd;"/>
+			<text x="625.177" y="199" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,398) scale(1,-1)">Analytics + Chat</text>
+			<text x="588" y="183" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,366) scale(1,-1)">Charts, trends,</text>
+			<text x="588" y="171" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,342) scale(1,-1)">and log Q&amp;A</text>
+			<rect x="385" y="75" width="165" height="52" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(99%,95%,78%); fill-rule: evenodd;"/>
+			<text x="417.549" y="109" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,218) scale(1,-1)">Configure Integrations</text>
+			<text x="393" y="93" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,186) scale(1,-1)">Slack, email,</text>
+			<text x="393" y="81" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,162) scale(1,-1)">webhook settings</text>
+			<rect x="190" y="20" width="165" height="52" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(86%,98%,90%); fill-rule: evenodd;"/>
+			<text x="249.125" y="54" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,108) scale(1,-1)">Send Logs</text>
+			<text x="198" y="38" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,76) scale(1,-1)">Single or batch</text>
+			<text x="198" y="26" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,52) scale(1,-1)">API ingest</text>
+			<rect x="580" y="20" width="165" height="52" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(100%,89%,90%); fill-rule: evenodd;"/>
+			<text x="614.6885" y="54" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,108) scale(1,-1)">Receive Notifications</text>
+			<text x="588" y="38" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,76) scale(1,-1)">Outbound anomaly</text>
+			<text x="588" y="26" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,52) scale(1,-1)">delivery</text>
+			<path d="M 95,225 L 190,280 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="190 280, 183.3043 279.5901, 186.3106 274.3975" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<path d="M 95,225 L 385,280 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="385 280, 378.5461 281.8295, 379.6641 275.9345" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<path d="M 95,225 L 580,280 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="580 280, 573.7002 282.3048, 574.3763 276.343" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<path d="M 95,225 L 190,190 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="190 190, 185.4071 194.8893, 183.3328 189.2592" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<path d="M 95,225 L 385,190 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="385 190, 379.4027 193.6973, 378.6838 187.7405" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<path d="M 95,225 L 580,190 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="580 190, 574.2315 193.4241, 573.7996 187.4396" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<path d="M 95,225 L 385,100 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="385 100, 380.6775 105.1299, 378.3026 99.62" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<path d="M 95,80 L 190,45 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="190 45, 185.4071 49.88926, 183.3328 44.2592" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<path d="M 745,45 L 820,45 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="820 45, 814 48, 814 42" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="781.81" y="60" style="font-family: Times-Roman; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,120) scale(1,-1)">Alert Channel</text>
+		</g>
+	</g>
+</svg>
+</div>
+      <div class="caption">Figure 3: Use case diagram for the current build</div>
+    </section>
+
+    <section id="interfaces">
+      <h3>1.5 External Interface Requirements</h3>
+      <h4>API and service interfaces</h4><table><thead><tr><th>Interface</th><th>Protocol</th><th>Direction</th><th>Description</th></tr></thead><tbody><tr><td>POST /api/v1/auth/signup</td><td>HTTPS</td><td>Client -&gt; FastAPI</td><td>Register a local user account and receive access/refresh tokens.</td></tr><tr><td>POST /api/v1/auth/login</td><td>HTTPS</td><td>Client -&gt; FastAPI</td><td>Authenticate a local user and receive tokens.</td></tr><tr><td>POST /api/v1/auth/refresh</td><td>HTTPS</td><td>Client -&gt; FastAPI</td><td>Issue a new access token using a refresh token.</td></tr><tr><td>GET /api/v1/auth/me</td><td>HTTPS</td><td>Client -&gt; FastAPI</td><td>Return the authenticated user profile.</td></tr><tr><td>GET /api/v1/servers</td><td>HTTPS</td><td>Client -&gt; FastAPI</td><td>List owned servers with 24-hour statistics.</td></tr><tr><td>POST /api/v1/servers</td><td>HTTPS</td><td>Client -&gt; FastAPI</td><td>Create a monitored server and API key.</td></tr><tr><td>GET /api/v1/servers/{id}/metrics</td><td>HTTPS</td><td>Client -&gt; FastAPI</td><td>Fetch detailed server metrics.</td></tr><tr><td>GET /api/v1/servers/dashboard/overview</td><td>HTTPS</td><td>Client -&gt; FastAPI</td><td>Fetch dashboard-wide overview data.</td></tr><tr><td>POST /api/v1/ingest</td><td>HTTPS + x-api-key</td><td>Application -&gt; FastAPI</td><td>Submit one log entry.</td></tr><tr><td>POST /api/v1/ingest/batch</td><td>HTTPS + x-api-key</td><td>Application -&gt; FastAPI</td><td>Submit a batch of logs.</td></tr><tr><td>GET /api/v1/logs</td><td>HTTPS</td><td>Client -&gt; FastAPI</td><td>Search and filter indexed logs.</td></tr><tr><td>POST /api/v1/chat</td><td>HTTPS</td><td>Client -&gt; FastAPI</td><td>Ask a contextual question about current logs.</td></tr><tr><td>GET /api/v1/integrations/alerts</td><td>HTTPS</td><td>Client -&gt; FastAPI</td><td>Load alert integration settings.</td></tr><tr><td>PUT /api/v1/integrations/alerts</td><td>HTTPS</td><td>Client -&gt; FastAPI</td><td>Update alert delivery settings.</td></tr><tr><td>POST /api/v1/integrations/alerts/test</td><td>HTTPS</td><td>Client -&gt; FastAPI</td><td>Send a synthetic test alert.</td></tr><tr><td>WS /ws?token=...&amp;server_id=...</td><td>WebSocket</td><td>Client &lt;-&gt; FastAPI</td><td>Receive live log and anomaly events and switch subscriptions.</td></tr><tr><td>GET /api/auth/google, /api/auth/github</td><td>HTTPS</td><td>Client -&gt; Auth Service</td><td>Start OAuth authentication flows.</td></tr><tr><td>GET /api/auth/health</td><td>HTTPS</td><td>Client -&gt; Auth Service</td><td>Health endpoint for auth service validation.</td></tr></tbody></table><h4>Communication interfaces</h4><table><thead><tr><th>Communication Path</th><th>Technology</th></tr></thead><tbody><tr><td>Frontend to backend</td><td>HTTPS REST + WebSocket</td></tr><tr><td>Backend to PostgreSQL</td><td>Async PostgreSQL driver</td></tr><tr><td>Backend / worker to Redis</td><td>Redis streams, lists, pub/sub, and sorted sets</td></tr><tr><td>Backend / worker to Elasticsearch</td><td>HTTP API via async client</td></tr><tr><td>Fluentd to Redis</td><td>Collector pipeline</td></tr><tr><td>Alert delivery</td><td>Slack webhook, SMTP, generic outbound webhook</td></tr></tbody></table>
+      <h4>Recommended manual bug-bash coverage</h4>
+      <ul><li>Authentication and token refresh</li><li>OAuth callback flow</li><li>Server creation and API key rotation</li><li>Single and batch ingest</li><li>Live dashboard WebSocket stream</li><li>Logs filtering and pagination</li><li>Alerts feed behavior</li><li>Analytics values and charts</li><li>Integrations save and test-send flow</li><li>Chat response quality for recent logs</li></ul>
+    </section>
+
+    <section id="er">
+      <h3>1.6 Entity Relationship Diagram</h3>
+      <div class="figure"><?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="860" height="340" preserveAspectRatio="xMinYMin meet" viewBox="0 0 860 340" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="860" height="340"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-340)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="40" y="200" width="220" height="110" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(85%,91%,99%); fill-rule: evenodd;"/>
+			<text x="138.6975" y="292" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,584) scale(1,-1)">users</text>
+			<text x="48" y="276" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,552) scale(1,-1)">id (UUID)</text>
+			<text x="48" y="264" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,528) scale(1,-1)">name</text>
+			<text x="48" y="252" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,504) scale(1,-1)">email</text>
+			<text x="48" y="240" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,480) scale(1,-1)">hashed_password</text>
+			<text x="48" y="228" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,456) scale(1,-1)">auth_provider</text>
+			<text x="48" y="216" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,432) scale(1,-1)">created_at / updated_at</text>
+			<rect x="320" y="200" width="220" height="110" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(86%,98%,90%); fill-rule: evenodd;"/>
+			<text x="414.424" y="292" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,584) scale(1,-1)">servers</text>
+			<text x="328" y="276" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,552) scale(1,-1)">id (UUID)</text>
+			<text x="328" y="264" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,528) scale(1,-1)">name</text>
+			<text x="328" y="252" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,504) scale(1,-1)">description</text>
+			<text x="328" y="240" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,480) scale(1,-1)">api_key</text>
+			<text x="328" y="228" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,456) scale(1,-1)">owner_id -&gt; users.id</text>
+			<text x="328" y="216" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,432) scale(1,-1)">is_active</text>
+			<rect x="600" y="200" width="220" height="110" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(100%,89%,90%); fill-rule: evenodd;"/>
+			<text x="671.5055" y="292" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,584) scale(1,-1)">alert_integrations</text>
+			<text x="608" y="276" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,552) scale(1,-1)">owner_id -&gt; users.id</text>
+			<text x="608" y="264" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,528) scale(1,-1)">slack/email/webhook flags</text>
+			<text x="608" y="252" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,504) scale(1,-1)">recipient URLs</text>
+			<text x="608" y="240" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,480) scale(1,-1)">minimum_anomaly_score</text>
+			<rect x="320" y="40" width="220" height="110" rx="8" ry="8" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1.1; fill: rgb(99%,95%,78%); fill-rule: evenodd;"/>
+			<text x="373.944" y="132" style="font-family: Times-Roman; font-size: 11px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,264) scale(1,-1)">logai-logs (Elasticsearch)</text>
+			<text x="328" y="116" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,232) scale(1,-1)">id</text>
+			<text x="328" y="104" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,208) scale(1,-1)">server_id</text>
+			<text x="328" y="92" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,184) scale(1,-1)">level</text>
+			<text x="328" y="80" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,160) scale(1,-1)">message</text>
+			<text x="328" y="68" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,136) scale(1,-1)">anomaly</text>
+			<text x="328" y="56" style="font-family: Times-Roman; font-size: 8.2px;fill: rgb(6%,9%,15%); stroke:none;" transform="translate(0,112) scale(1,-1)">anomaly_score</text>
+			<path d="M 260,255 L 320,255 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="320 255, 314 258, 314 252" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="282.5" y="261.0" style="font-family: Times-Roman; font-size: 7.5px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,522) scale(1,-1)">1 : N</text>
+			<path d="M 150,200 L 150,160 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="150 160, 153 166, 147 166" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<path d="M 150,160 L 600,255 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="600 255, 593.5097 256.696, 594.7491 250.8253" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="368.3325" y="213.5" style="font-family: Times-Roman; font-size: 7.5px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,427) scale(1,-1)">1 : 1</text>
+			<path d="M 430,200 L 430,150 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="430 150, 433 156, 427 156" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="422.5" y="181.0" style="font-family: Times-Roman; font-size: 7.5px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,362) scale(1,-1)">1 : N</text>
+			<text x="100.568" y="145" style="font-family: Times-Roman; font-size: 8px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,290) scale(1,-1)">one user owns one alert profile</text>
+			<text x="363.68" y="135" style="font-family: Times-Roman; font-size: 8px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,270) scale(1,-1)">one server produces many log documents</text>
+		</g>
+	</g>
+</svg>
+</div>
+      <div class="caption">Figure 4: ER diagram combining relational ownership and the Elasticsearch log dataset</div>
+    </section>
+
+    <section id="sequence">
+      <h3>1.7 Sequence Diagram</h3>
+      <div class="figure"><?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="860" height="390" preserveAspectRatio="xMinYMin meet" viewBox="0 0 860 390" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="860" height="390"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-390)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="36.39" y="360" style="font-family: Times-Roman; font-size: 10px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,720) scale(1,-1)">Application</text>
+			<path d="M 60,40 L 60,340 Z" style="stroke: rgb(79%,83%,88%); stroke-linecap: butt; stroke-width: 1; stroke-dasharray: 4, 3;"/>
+			<text x="158.475" y="360" style="font-family: Times-Roman; font-size: 10px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,720) scale(1,-1)">Ingest API</text>
+			<path d="M 180,40 L 180,340 Z" style="stroke: rgb(79%,83%,88%); stroke-linecap: butt; stroke-width: 1; stroke-dasharray: 4, 3;"/>
+			<text x="285.975" y="360" style="font-family: Times-Roman; font-size: 10px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,720) scale(1,-1)">Anomaly Engine</text>
+			<path d="M 320,40 L 320,340 Z" style="stroke: rgb(79%,83%,88%); stroke-linecap: butt; stroke-width: 1; stroke-dasharray: 4, 3;"/>
+			<text x="443.62" y="360" style="font-family: Times-Roman; font-size: 10px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,720) scale(1,-1)">Elasticsearch</text>
+			<path d="M 470,40 L 470,340 Z" style="stroke: rgb(79%,83%,88%); stroke-linecap: butt; stroke-width: 1; stroke-dasharray: 4, 3;"/>
+			<text x="598.61" y="360" style="font-family: Times-Roman; font-size: 10px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,720) scale(1,-1)">Redis</text>
+			<path d="M 610,40 L 610,340 Z" style="stroke: rgb(79%,83%,88%); stroke-linecap: butt; stroke-width: 1; stroke-dasharray: 4, 3;"/>
+			<text x="706.95" y="360" style="font-family: Times-Roman; font-size: 10px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,720) scale(1,-1)">WebSocket</text>
+			<path d="M 730,40 L 730,340 Z" style="stroke: rgb(79%,83%,88%); stroke-linecap: butt; stroke-width: 1; stroke-dasharray: 4, 3;"/>
+			<text x="801.945" y="360" style="font-family: Times-Roman; font-size: 10px;fill: rgb(5%,9%,16%); stroke:none;" transform="translate(0,720) scale(1,-1)">Frontend</text>
+			<path d="M 820,40 L 820,340 Z" style="stroke: rgb(79%,83%,88%); stroke-linecap: butt; stroke-width: 1; stroke-dasharray: 4, 3;"/>
+			<path d="M 60,320 L 180,320 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="180 320, 174 323, 174 317" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="96.1425" y="326.0" style="font-family: Times-Roman; font-size: 7.5px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,652) scale(1,-1)">1. POST /ingest</text>
+			<path d="M 180,290 L 320,290 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="320 290, 314 293, 314 287" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="231.0475" y="296.0" style="font-family: Times-Roman; font-size: 7.5px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,592) scale(1,-1)">2. score(log)</text>
+			<path d="M 320,260 L 470,260 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="470 260, 464 263, 464 257" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="365.42" y="266.0" style="font-family: Times-Roman; font-size: 7.5px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,532) scale(1,-1)">3. store indexed log</text>
+			<path d="M 320,220 L 610,220 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="610 220, 604 223, 604 217" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="434.58375" y="226.0" style="font-family: Times-Roman; font-size: 7.5px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,452) scale(1,-1)">4. publish live event</text>
+			<path d="M 610,180 L 730,180 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="730 180, 724 183, 724 177" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="639.06625" y="186.0" style="font-family: Times-Roman; font-size: 7.5px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,372) scale(1,-1)">5. broadcast pub/sub</text>
+			<path d="M 730,140 L 820,140 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="820 140, 814 143, 814 137" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="732.29875" y="146.0" style="font-family: Times-Roman; font-size: 7.5px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,292) scale(1,-1)">6. push WebSocket message</text>
+			<path d="M 320,100 L 610,100 Z" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="610 100, 604 103, 604 97" style="stroke: rgb(27%,33%,41%); stroke-linecap: butt; stroke-width: 1; fill: rgb(27%,33%,41%); fill-rule: evenodd;"/>
+			<text x="427.92" y="106.0" style="font-family: Times-Roman; font-size: 7.5px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,212) scale(1,-1)">7. optional alert dispatch</text>
+		</g>
+	</g>
+</svg>
+</div>
+      <div class="caption">Figure 5: Sequence diagram for a log ingest to live dashboard event</div>
+    </section>
+
+    <section id="future">
+      <h3>1.8 Future Improvements</h3>
+      <ul><li>Upgrade the current rule-based chat assistant to a stronger retrieval-augmented AI workflow or hosted LLM integration.</li><li>Explore richer anomaly models such as sequence-aware models, ensemble scoring, and feedback-driven threshold tuning.</li><li>Add a hosted deployment path with production-grade monitoring, persistence, TLS, and scaling controls.</li><li>Add organization-level roles, audit trails, retention policies, and multi-tenant support.</li><li>Introduce formal automated E2E browser tests in addition to the current smoke and load scripts.</li></ul>
+    </section>
+  </div>
+</body>
+</html>

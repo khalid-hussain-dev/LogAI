@@ -1,0 +1,66 @@
+flowchart LR
+    subgraph Clients["Clients and producers"]
+        A1["Browser user"]
+        A2["Python shipper / curl / custom app"]
+        A3["Servers, containers, syslog, Fluentd forward/http"]
+    end
+
+    subgraph Access["UI and entry layer"]
+        B1["React frontend"]
+        B2["Vite dev proxy or NGINX reverse proxy"]
+        B3["FastAPI REST and WebSocket API"]
+        B4["Node auth service"]
+    end
+
+    subgraph Data["State and transport"]
+        C1["PostgreSQL"]
+        C2["Elasticsearch log index"]
+        C3["Redis list: logai:list:fluentd"]
+        C4["Redis stream: logai:stream:processed"]
+        C5["Redis Pub/Sub channels"]
+    end
+
+    subgraph Processing["Processing pipeline"]
+        D1["AnomalyService"]
+        D2["Stream worker"]
+        D3["Parser layer\nJSON, Nginx, Python/Java, Syslog"]
+        D4["Notification service"]
+    end
+
+    subgraph Outputs["Outbound channels"]
+        E1["Slack"]
+        E2["SMTP email"]
+        E3["Custom webhook"]
+    end
+
+    A1 --> B1
+    B1 --> B2
+    B2 --> B3
+    B2 --> B4
+
+    B3 --> C1
+    B3 --> C2
+    B4 --> C1
+
+    A2 -->|REST ingest| B3
+    A3 -->|Collector ingest| C3
+
+    B3 -->|direct score and store| D1
+    D1 --> C2
+    B3 -->|records downstream event| C4
+
+    C3 --> D2
+    D2 --> D3
+    D3 --> D1
+    D2 --> C2
+    D2 --> C5
+    D2 --> D4
+
+    D4 --> E1
+    D4 --> E2
+    D4 --> E3
+
+    B3 <-->|query logs, metrics, chat| C2
+    B3 <-->|live subscriptions| C5
+    B3 -->|JWT auth, servers, integrations| C1
+    B1 -->|dashboard, logs, alerts, chat| B3

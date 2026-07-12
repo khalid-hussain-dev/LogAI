@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="860" height="300" preserveAspectRatio="xMinYMin meet" viewBox="0 0 860 300" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="860" height="300"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-300)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="30" y="30" width="800" height="230" rx="10" ry="10" style="stroke: rgb(79%,83%,88%); stroke-linecap: butt; stroke-width: 1; fill: rgb(97%,98%,98%); fill-rule: evenodd;"/>
+			<rect x="30" y="30" width="165" height="230" style="stroke: rgb(5%,9%,16%); stroke-linecap: butt; stroke-width: 1; fill: rgb(5%,9%,16%); fill-rule: evenodd;"/>
+			<text x="52" y="228" style="font-family: Times-Roman; font-size: 9.5px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,456) scale(1,-1)">Dashboard</text>
+			<text x="52" y="206" style="font-family: Times-Roman; font-size: 9.5px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,412) scale(1,-1)">Logs</text>
+			<text x="52" y="184" style="font-family: Times-Roman; font-size: 9.5px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,368) scale(1,-1)">Alerts</text>
+			<text x="52" y="162" style="font-family: Times-Roman; font-size: 9.5px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,324) scale(1,-1)">Analytics</text>
+			<text x="52" y="140" style="font-family: Times-Roman; font-size: 9.5px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,280) scale(1,-1)">Servers</text>
+			<text x="52" y="118" style="font-family: Times-Roman; font-size: 9.5px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,236) scale(1,-1)">Chat</text>
+			<text x="52" y="96" style="font-family: Times-Roman; font-size: 9.5px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,192) scale(1,-1)">Integrations</text>
+			<text x="52" y="74" style="font-family: Times-Roman; font-size: 9.5px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,148) scale(1,-1)">Docs</text>
+			<text x="52" y="52" style="font-family: Times-Roman; font-size: 9.5px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,104) scale(1,-1)">Settings</text>
+			<rect x="215" y="200" width="590" height="35" style="stroke: rgb(79%,83%,88%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="235" y="213" style="font-family: Times-Roman; font-size: 10px;fill: rgb(27%,33%,41%); stroke:none;" transform="translate(0,426) scale(1,-1)">Overview Header + Filters</text>
+			<rect x="225" y="145" width="160" height="40" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1; fill: rgb(85%,91%,99%); fill-rule: evenodd;"/>
+			<rect x="420" y="145" width="160" height="40" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1; fill: rgb(85%,91%,99%); fill-rule: evenodd;"/>
+			<rect x="615" y="145" width="160" height="40" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1; fill: rgb(85%,91%,99%); fill-rule: evenodd;"/>
+			<text x="255" y="162" style="font-family: Times-Roman; font-size: 9px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,324) scale(1,-1)">KPI Card</text>
+			<text x="450" y="162" style="font-family: Times-Roman; font-size: 9px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,324) scale(1,-1)">KPI Card</text>
+			<text x="645" y="162" style="font-family: Times-Roman; font-size: 9px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,324) scale(1,-1)">KPI Card</text>
+			<rect x="225" y="65" width="360" height="65" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1; fill: rgb(86%,98%,90%); fill-rule: evenodd;"/>
+			<text x="303.475" y="100" style="font-family: Times-Roman; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,200) scale(1,-1)">Charts / Trends / Live Activity</text>
+			<rect x="605" y="65" width="180" height="65" style="stroke: rgb(11%,30%,84%); stroke-linecap: butt; stroke-width: 1; fill: rgb(99%,95%,78%); fill-rule: evenodd;"/>
+			<text x="646.115" y="100" style="font-family: Times-Roman; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,200) scale(1,-1)">Live Logs / Alerts Panel</text>
+		</g>
+	</g>
+</svg>

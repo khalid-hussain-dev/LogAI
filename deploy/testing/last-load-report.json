@@ -1,0 +1,19 @@
+{
+  "requests": 300,
+  "concurrency": 15,
+  "duration_seconds": 5.21,
+  "successes": 300,
+  "failures": 0,
+  "throughput_rps": 57.58,
+  "latency_ms": {
+    "min": 99.97,
+    "mean": 255.69,
+    "p50": 201.2,
+    "p95": 484.02,
+    "max": 1250.86
+  },
+  "status_counts": {
+    "201": 300
+  },
+  "sample_errors": []
+}

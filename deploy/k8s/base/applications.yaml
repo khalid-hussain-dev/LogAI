@@ -1,0 +1,173 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: logai-backend
+spec:
+  selector:
+    app: logai-backend
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logai-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: logai-backend
+  template:
+    metadata:
+      labels:
+        app: logai-backend
+    spec:
+      containers:
+        - name: backend
+          image: logai/backend:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: logai-config
+            - secretRef:
+                name: logai-secrets
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 20
+            periodSeconds: 20
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logai-stream-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: logai-stream-worker
+  template:
+    metadata:
+      labels:
+        app: logai-stream-worker
+    spec:
+      containers:
+        - name: stream-worker
+          image: logai/backend:latest
+          imagePullPolicy: IfNotPresent
+          command:
+            - python
+            - -m
+            - app.workers.stream_worker
+          envFrom:
+            - configMapRef:
+                name: logai-config
+            - secretRef:
+                name: logai-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: logai-auth-service
+spec:
+  selector:
+    app: logai-auth-service
+  ports:
+    - name: http
+      port: 4001
+      targetPort: 4001
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logai-auth-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: logai-auth-service
+  template:
+    metadata:
+      labels:
+        app: logai-auth-service
+    spec:
+      containers:
+        - name: auth-service
+          image: logai/auth-service:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 4001
+          envFrom:
+            - configMapRef:
+                name: logai-config
+            - secretRef:
+                name: logai-secrets
+          readinessProbe:
+            httpGet:
+              path: /api/auth/health
+              port: 4001
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/auth/health
+              port: 4001
+            initialDelaySeconds: 20
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: logai-frontend
+spec:
+  selector:
+    app: logai-frontend
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logai-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: logai-frontend
+  template:
+    metadata:
+      labels:
+        app: logai-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: logai/frontend:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 20
+
