@@ -1,7 +1,7 @@
 import { BookOpen, Key, Database } from 'lucide-react'
 import DashboardLayout from '../components/DashboardLayout'
 
-const BACKEND_URL = typeof window !== 'undefined' ? window.location.origin : ''
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || ''
 const COLORS = { card: '#111827', background: '#0B1220', accentBlue: '#3B82F6', aiCyan: '#22D3EE' }
 
 const endpoints = [

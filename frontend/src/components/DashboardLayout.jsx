@@ -7,7 +7,7 @@ import { LayoutDashboard, BarChart3, Terminal, Server, Settings, Bell, LogOut, C
 import { brandAssets } from '../assets/brand'
 import { useLogStream } from '../services/logStream'
 
-const BACKEND_URL = typeof window !== 'undefined' ? window.location.origin : ''
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || ''
 
 const COLORS = {
   background: '#050914',

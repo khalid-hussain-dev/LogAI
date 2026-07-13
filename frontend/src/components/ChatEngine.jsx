@@ -3,7 +3,7 @@ import { Send, Sparkles, Trash2, Copy, Check, MessageSquare, RefreshCw } from 'l
 import { authFetch } from '../services/auth'
 import { brandAssets } from '../assets/brand'
 
-const BACKEND_URL = typeof window !== 'undefined' ? window.location.origin : ''
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || ''
 
 const SUGGESTIONS = [
   { label: 'System Health Summary', query: 'Show me a health and status summary' },

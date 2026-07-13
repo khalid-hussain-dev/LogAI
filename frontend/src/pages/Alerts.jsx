@@ -6,7 +6,7 @@ import { authFetch } from '../services/auth'
 import { SkeletonTable } from '../components/Skeleton'
 import { useLogStream } from '../services/logStream'
 
-const BACKEND_URL = typeof window !== 'undefined' ? window.location.origin : ''
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || ''
 const COLORS = { card: '#111827', background: '#0B1220', accentBlue: '#3B82F6', danger: '#EF4444', warning: '#F59E0B', aiCyan: '#22D3EE' }
 
 const LEVEL_COLORS = {

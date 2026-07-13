@@ -5,7 +5,7 @@ import DashboardLayout from '../components/DashboardLayout'
 import { authFetch } from '../services/auth'
 import { useToast } from '../context/ToastContext'
 
-const BACKEND_URL = typeof window !== 'undefined' ? window.location.origin : ''
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || ''
 const COLORS = {
   card: '#111827',
   background: '#0B1220',

@@ -5,7 +5,7 @@ import DashboardLayout from '../components/DashboardLayout'
 import { authFetch } from '../services/auth'
 import { SkeletonTable } from '../components/Skeleton'
 
-const BACKEND_URL = typeof window !== 'undefined' ? window.location.origin : ''
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || ''
 const COLORS = { card: '#111827', background: '#0B1220', accentBlue: '#3B82F6', danger: '#EF4444', warning: '#F59E0B', success: '#10B981' }
 
 const LEVEL_COLORS = {

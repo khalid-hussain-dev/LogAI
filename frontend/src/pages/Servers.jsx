@@ -10,7 +10,7 @@ import { Input } from '../components/ui/input'
 import { Label } from '../components/ui/label'
 import { Skeleton } from '../components/Skeleton'
 
-const BACKEND_URL = typeof window !== 'undefined' ? window.location.origin : ''
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || ''
 const COLORS = { card: '#111827', background: '#0B1220', accentBlue: '#3B82F6', success: '#10B981', danger: '#EF4444', warning: '#F59E0B' }
 
 export default function Servers() {

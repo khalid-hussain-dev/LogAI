@@ -37,7 +37,7 @@ import { SkeletonCard } from '../components/Skeleton'
 import { authFetch } from '../services/auth'
 import { useLogStream } from '../services/logStream'
 
-const BACKEND_URL = typeof window !== 'undefined' ? window.location.origin : ''
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || ''
 const MAX_LIVE_LOGS = 22
 
 const COLORS = {

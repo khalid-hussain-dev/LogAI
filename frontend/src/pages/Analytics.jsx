@@ -7,7 +7,7 @@ import {
 } from 'recharts'
 import { SkeletonChart } from '../components/Skeleton'
 
-const BACKEND_URL = typeof window !== 'undefined' ? window.location.origin : ''
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || ''
 const COLORS = {
   background: '#0B1220',
   card: '#111827',
