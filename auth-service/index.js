@@ -34,13 +34,16 @@ const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173'
 const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'http://localhost:5173').split(',')
 
 // ── PostgreSQL pool ─────────────────────────────────────────
-const pool = new Pool({
-  host: process.env.POSTGRES_HOST || 'postgres',
-  port: parseInt(process.env.POSTGRES_PORT || '5432'),
-  database: process.env.POSTGRES_DB || 'logai',
-  user: process.env.POSTGRES_USER || 'logai',
-  password: process.env.POSTGRES_PASSWORD || 'logai_secret_2025',
-})
+const connectionString = process.env.DATABASE_URL
+const pool = connectionString 
+  ? new Pool({ connectionString })
+  : new Pool({
+      host: process.env.POSTGRES_HOST || 'postgres',
+      port: parseInt(process.env.POSTGRES_PORT || '5432'),
+      database: process.env.POSTGRES_DB || 'logai',
+      user: process.env.POSTGRES_USER || 'logai',
+      password: process.env.POSTGRES_PASSWORD || 'logai_secret_2025',
+    })
 
 // ── JWT helpers ─────────────────────────────────────────────
 function createAccessToken(userId) {
@@ -101,7 +104,7 @@ async function upsertOAuthUser(provider, oauthId, name, email, picture) {
   // Create new user
   result = await pool.query(
     `INSERT INTO users (id, name, email, auth_provider, oauth_id, picture, is_active, created_at, updated_at)
-     VALUES (uuid_generate_v4(), $1, $2, $3, $4, $5, true, NOW(), NOW())
+     VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, true, NOW(), NOW())
      RETURNING id, name, email, picture`,
     [name, email || `${provider}_${oauthId}@logai.local`, provider, oauthId, picture]
   )
