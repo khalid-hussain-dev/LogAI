@@ -1,7 +1,7 @@
 import { getAccessToken, getRefreshToken, setTokens, clearTokens, isTokenExpired } from './token';
 
-const BACKEND_URL = typeof window !== 'undefined' ? window.location.origin : '';
-const AUTH_SERVICE_URL = typeof window !== 'undefined' ? window.location.origin : '';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '';
+const AUTH_SERVICE_URL = import.meta.env.VITE_AUTH_SERVICE_URL || '';
 
 async function authFetch(url, options = {}) {
   let token = getAccessToken();

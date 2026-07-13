@@ -1,6 +1,6 @@
 import { authFetch } from './auth';
 
-const BACKEND_URL = typeof window !== 'undefined' ? window.location.origin : '';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '';
 
 export async function fetchServers() {
   const res = await authFetch(`${BACKEND_URL}/api/v1/servers`);

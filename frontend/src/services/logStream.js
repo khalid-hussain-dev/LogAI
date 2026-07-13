@@ -7,9 +7,16 @@ function buildWebSocketUrl(serverId) {
   const token = getAccessToken()
   if (!token) return null
 
-  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-  const url = new URL('/ws', window.location.origin)
-  url.protocol = protocol
+  const backendUrl = import.meta.env.VITE_BACKEND_URL
+  let url
+  if (backendUrl) {
+    const wsBase = backendUrl.replace(/^http/, 'ws')
+    url = new URL('/ws', wsBase)
+  } else {
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
+    url = new URL('/ws', window.location.origin)
+    url.protocol = protocol
+  }
   url.searchParams.set('token', token)
   if (serverId) url.searchParams.set('server_id', serverId)
   return url.toString()

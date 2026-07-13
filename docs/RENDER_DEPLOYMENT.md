@@ -153,9 +153,12 @@ The stream worker handles rollups, anomaly training, and alerting in the backgro
    - **Build Command**: `npm install && npm run build`
    - **Publish Directory**: `dist`
    - **Root Directory**: `frontend`
-4. Click **Create Static Site**.
-5. Copy the generated Static Site URL (e.g. `https://logai-dashboard.onrender.com`).
-6. **Post-Deployment Updates**:
+4. Expand **Advanced** and add the following **Environment Variables**:
+   - `VITE_BACKEND_URL` = `[Your Render Backend Web Service URL (e.g. https://logai-backend.onrender.com)]`
+   - `VITE_AUTH_SERVICE_URL` = `[Your Render Auth Service Web Service URL (e.g. https://logai-auth-service.onrender.com)]`
+5. Click **Create Static Site**.
+6. Copy the generated Static Site URL (e.g. `https://logai-dashboard.onrender.com`).
+7. **Post-Deployment Updates**:
    - Go back to your **Node Auth Service** settings and update `FRONTEND_URL` environment variable with this static site URL.
    - Update your OAuth credentials (Google/GitHub Developer Console) redirects to point to `https://logai-auth-service.onrender.com/api/auth/google/callback`.
 
