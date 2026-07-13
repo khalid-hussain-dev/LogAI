@@ -16,10 +16,15 @@ depends_on = None
 
 
 def upgrade():
+    # Enable pgcrypto for gen_random_uuid() — built-in on PostgreSQL 13+
+    # and available on all managed Postgres providers (Render, Supabase, etc.)
+    # This replaces uuid_generate_v4() which requires the uuid-ossp extension.
+    op.execute('CREATE EXTENSION IF NOT EXISTS "pgcrypto"')
+
     # ── Users table ──────────────────────────────────────────
     op.create_table(
         "users",
-        sa.Column("id", UUID(as_uuid=True), primary_key=True, server_default=sa.text("uuid_generate_v4()")),
+        sa.Column("id", UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")),
         sa.Column("name", sa.String(255), nullable=False),
         sa.Column("email", sa.String(255), nullable=False, unique=True),
         sa.Column("hashed_password", sa.String(255), nullable=True),
@@ -35,7 +40,7 @@ def upgrade():
     # ── Servers table ────────────────────────────────────────
     op.create_table(
         "servers",
-        sa.Column("id", UUID(as_uuid=True), primary_key=True, server_default=sa.text("uuid_generate_v4()")),
+        sa.Column("id", UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")),
         sa.Column("name", sa.String(255), nullable=False),
         sa.Column("description", sa.Text(), nullable=True),
         sa.Column("api_key", sa.String(255), nullable=False, unique=True),
@@ -51,4 +56,3 @@ def upgrade():
 def downgrade():
     op.drop_table("servers")
     op.drop_table("users")
-
