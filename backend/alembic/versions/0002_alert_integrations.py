@@ -18,7 +18,7 @@ depends_on = None
 def upgrade():
     op.create_table(
         "alert_integrations",
-        sa.Column("id", UUID(as_uuid=True), primary_key=True, server_default=sa.text("uuid_generate_v4()")),
+        sa.Column("id", UUID(as_uuid=True), primary_key=True, server_default=sa.text("gen_random_uuid()")),
         sa.Column("owner_id", UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=False),
         sa.Column("slack_enabled", sa.Boolean(), nullable=False, server_default=sa.text("false")),
         sa.Column("slack_webhook_url", sa.String(length=1024), nullable=True),
