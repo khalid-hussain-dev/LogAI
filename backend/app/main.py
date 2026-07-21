@@ -80,7 +80,21 @@ app.include_router(api_router)
 app.include_router(websocket_router)
 
 
+@app.get("/")
+async def root():
+    """Root endpoint — welcome message and status index."""
+    return {
+        "name": "LogAI Backend API",
+        "status": "online",
+        "version": settings.APP_VERSION,
+        "docs": "/docs",
+        "health": "/health",
+        "api": "/api/v1",
+    }
+
+
 @app.get("/health")
 async def health():
     """Health check endpoint."""
     return {"status": "ok", "version": settings.APP_VERSION}
+

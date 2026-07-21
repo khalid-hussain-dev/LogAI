@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { Send, Sparkles, Trash2, Copy, Check, MessageSquare, RefreshCw } from 'lucide-react'
 import { authFetch } from '../services/auth'
+import { useAuth } from '../context/AuthContext'
 import { brandAssets } from '../assets/brand'
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || ''
@@ -13,27 +14,35 @@ const SUGGESTIONS = [
 ]
 
 export default function ChatEngine({ fullHeight = false }) {
-  const [messages, setMessages] = useState(() => {
-    try {
-      const saved = localStorage.getItem('logai_chat_history')
-      return saved ? JSON.parse(saved) : []
-    } catch {
-      return []
-    }
-  })
+  const { user } = useAuth()
+  const storageKey = user?.id ? `logai_chat_history_${user.id}` : 'logai_chat_history_guest'
+
+  const [messages, setMessages] = useState([])
   const [inputValue, setInputValue] = useState('')
   const [isTyping, setIsTyping] = useState(false)
   const [copiedId, setCopiedId] = useState(null)
   const messagesEndRef = useRef(null)
 
-  // Save history to localStorage
+  // Load user-scoped history whenever active user changes
   useEffect(() => {
     try {
-      localStorage.setItem('logai_chat_history', JSON.stringify(messages))
+      const saved = localStorage.getItem(storageKey)
+      setMessages(saved ? JSON.parse(saved) : [])
+    } catch {
+      setMessages([])
+    }
+  }, [storageKey])
+
+  // Save history to user-scoped key in localStorage
+  useEffect(() => {
+    if (!storageKey) return
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(messages))
     } catch (e) {
       console.warn('Failed to save chat history:', e)
     }
-  }, [messages])
+  }, [messages, storageKey])
+
 
   // Scroll to bottom
   useEffect(() => {
@@ -83,7 +92,7 @@ export default function ChatEngine({ fullHeight = false }) {
   const handleClearHistory = () => {
     if (window.confirm('Clear all conversation history?')) {
       setMessages([])
-      localStorage.removeItem('logai_chat_history')
+      localStorage.removeItem(storageKey)
     }
   }
 
