@@ -20,6 +20,7 @@ async def list_servers(db: AsyncSession, user_id: uuid.UUID) -> List[Dict[str, A
     """
     List all active servers accessible to a user (both owned and shared).
     Returns a list of dict objects containing server entity, role, is_shared, and owner_email.
+    Gracefully falls back to owned-only if server_members table doesn't exist yet.
     """
     # Query owned servers
     owned_result = await db.execute(
@@ -29,16 +30,6 @@ async def list_servers(db: AsyncSession, user_id: uuid.UUID) -> List[Dict[str, A
         .order_by(Server.created_at.desc())
     )
     owned_rows = owned_result.all()
-
-    # Query shared servers
-    shared_result = await db.execute(
-        select(Server, ServerMember.role, User.email)
-        .join(ServerMember, Server.id == ServerMember.server_id)
-        .join(User, Server.owner_id == User.id)
-        .where(ServerMember.user_id == user_id, Server.is_active == True)
-        .order_by(Server.created_at.desc())
-    )
-    shared_rows = shared_result.all()
 
     result = []
     seen_ids = set()
@@ -52,15 +43,28 @@ async def list_servers(db: AsyncSession, user_id: uuid.UUID) -> List[Dict[str, A
             "owner_email": owner_email,
         })
 
-    for server, role, owner_email in shared_rows:
-        if server.id not in seen_ids:
-            seen_ids.add(server.id)
-            result.append({
-                "server": server,
-                "role": role,
-                "is_shared": True,
-                "owner_email": owner_email,
-            })
+    # Query shared servers — gracefully skip if table hasn't been migrated yet
+    try:
+        shared_result = await db.execute(
+            select(Server, ServerMember.role, User.email)
+            .join(ServerMember, Server.id == ServerMember.server_id)
+            .join(User, Server.owner_id == User.id)
+            .where(ServerMember.user_id == user_id, Server.is_active == True)
+            .order_by(Server.created_at.desc())
+        )
+        shared_rows = shared_result.all()
+        for server, role, owner_email in shared_rows:
+            if server.id not in seen_ids:
+                seen_ids.add(server.id)
+                result.append({
+                    "server": server,
+                    "role": role,
+                    "is_shared": True,
+                    "owner_email": owner_email,
+                })
+    except Exception:
+        # server_members table may not exist if migration hasn't run yet
+        pass
 
     return result
 
