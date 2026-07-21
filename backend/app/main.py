@@ -38,6 +38,16 @@ async def lifespan(app: FastAPI):
     logger.info(f"Environment: {settings.ENVIRONMENT}")
     logger.info(f"Version: {settings.APP_VERSION}")
 
+    # Ensure PostgreSQL database tables exist
+    try:
+        from app.db.postgres import engine, Base
+        import app.models  # noqa: F401
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+        logger.info("PostgreSQL database tables verified")
+    except Exception as e:
+        logger.error(f"Failed to verify PostgreSQL tables: {e}")
+
     # Create Elasticsearch index with mappings
     try:
         await ensure_log_index()

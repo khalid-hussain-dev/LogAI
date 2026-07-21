@@ -48,6 +48,7 @@ class User(Base, TimestampMixin):
 
     # Relationships
     servers = relationship("Server", back_populates="owner", lazy="selectin")
+    server_memberships = relationship("ServerMember", back_populates="user", cascade="all, delete-orphan")
     alert_integration = relationship(
         "AlertIntegration",
         back_populates="owner",

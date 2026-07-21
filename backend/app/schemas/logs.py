@@ -71,13 +71,16 @@ class LogListResponse(BaseModel):
 # ── Server Responses ────────────────────────────────────────────────────────
 
 class ServerResponse(BaseModel):
-    """Server with 24h stats."""
+    """Server with 24h stats and ownership metadata."""
     id: str
     name: str
     description: Optional[str] = None
     api_key: str
     is_active: bool
     created_at: str
+    is_shared: bool = False
+    role: str = "owner"
+    owner_email: Optional[str] = None
     log_count_24h: int = 0
     error_count_24h: int = 0
     anomaly_count_24h: int = 0
@@ -90,6 +93,29 @@ class ServerCreateRequest(BaseModel):
     """Body for POST /servers."""
     name: str = Field(..., min_length=1, max_length=255)
     description: Optional[str] = None
+
+
+class ServerLinkRequest(BaseModel):
+    """Body for POST /servers/link-key."""
+    api_key: str = Field(..., min_length=10, max_length=255, description="Existing LogAI server API key")
+
+
+class ServerShareRequest(BaseModel):
+    """Body for POST /servers/{id}/share."""
+    email: str = Field(..., min_length=3, max_length=255, description="Target user email address to invite")
+    role: str = Field("viewer", description="Access role: viewer or admin")
+
+
+class ServerMemberResponse(BaseModel):
+    """User member of a shared server."""
+    id: str
+    user_id: str
+    name: str
+    email: str
+    picture: Optional[str] = None
+    role: str
+    is_owner: bool = False
+    created_at: str
 
 
 # ── Metrics ─────────────────────────────────────────────────────────────────

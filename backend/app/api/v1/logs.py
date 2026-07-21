@@ -117,9 +117,9 @@ async def list_logs(
     # log leakage when server_ids resolves to an empty list.
     from app.services import server_service
     user_servers = await server_service.list_servers(db, user.id)
-    server_ids = [str(s.id) for s in user_servers if s.is_active]
+    server_ids = [str(item["server"].id) for item in user_servers if item["server"].is_active]
 
-    # If specific server requested, verify ownership
+    # If specific server requested, verify ownership/access
     if server_id:
         if server_id not in server_ids:
             raise HTTPException(
@@ -156,7 +156,7 @@ async def chat(
     """AI chat — queries real ES data to answer log-related questions."""
     from app.services import server_service
     user_servers = await server_service.list_servers(db, user.id)
-    server_ids = [str(s.id) for s in user_servers if s.is_active]
+    server_ids = [str(item["server"].id) for item in user_servers if item["server"].is_active]
 
     # If specific server requested, verify ownership
     if body.server_id:

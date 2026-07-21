@@ -32,6 +32,7 @@ class Server(Base, TimestampMixin):
 
     # Relationships
     owner = relationship("User", back_populates="servers")
+    members = relationship("ServerMember", back_populates="server", cascade="all, delete-orphan", lazy="selectin")
 
     def __repr__(self) -> str:
         return f"<Server {self.name} (owner={self.owner_id})>"
