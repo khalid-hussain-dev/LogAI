@@ -207,8 +207,12 @@ async def send_test_notification(
 
 
 async def dispatch_anomaly_notifications(server_id: str, log_data: dict[str, Any]) -> int:
-    """Send notifications for one anomaly document based on the owner's saved settings."""
-    if not log_data.get("anomaly"):
+    """Send notifications for anomaly documents or critical errors based on owner settings."""
+    level = str(log_data.get("level") or "info").lower()
+    is_critical_error = level in ("critical", "fatal")
+    is_ml_anomaly = bool(log_data.get("anomaly"))
+
+    if not (is_critical_error or is_ml_anomaly):
         return 0
 
     try:
@@ -234,7 +238,8 @@ async def dispatch_anomaly_notifications(server_id: str, log_data: dict[str, Any
         return 0
 
     score = float(log_data.get("anomaly_score") or 0.0)
-    if score < float(integration.minimum_anomaly_score):
+    # Bypass minimum score filter for critical errors
+    if not is_critical_error and score < float(integration.minimum_anomaly_score):
         return 0
 
     payload = dict(log_data)

@@ -9,6 +9,7 @@ import logging
 import uuid
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
+import httpx
 
 from elasticsearch import AsyncElasticsearch
 
@@ -88,7 +89,7 @@ async def ingest_single(
 
     await _publish_live_update(server_id, doc)
 
-    if is_anomaly:
+    if is_anomaly or level in ("critical", "fatal"):
         try:
             await dispatch_anomaly_notifications(server_id, doc)
         except Exception as e:
@@ -111,7 +112,7 @@ async def ingest_batch(
     now = datetime.now(timezone.utc)
     operations = []
     anomaly_count = 0
-    anomaly_docs = []
+    notify_docs = []
     indexed_docs = []
 
     for log in logs:
@@ -152,8 +153,8 @@ async def ingest_batch(
         operations.append({"index": {"_index": INDEX, "_id": doc_id}})
         operations.append(doc)
         indexed_docs.append(doc)
-        if is_anomaly:
-            anomaly_docs.append(doc)
+        if is_anomaly or level in ("critical", "fatal"):
+            notify_docs.append(doc)
 
     if operations:
         await es.bulk(operations=operations, refresh="wait_for")
@@ -161,11 +162,12 @@ async def ingest_batch(
     for doc in indexed_docs:
         await _publish_live_update(server_id, doc)
 
-    for doc in anomaly_docs:
+    for doc in notify_docs:
         try:
             await dispatch_anomaly_notifications(server_id, doc)
         except Exception as e:
             logger.warning(f"Failed to send anomaly notifications: {e}")
+
 
     return {"count": len(logs), "anomalies": anomaly_count}
 
@@ -585,8 +587,8 @@ async def generate_chat_response(
     message: str,
 ) -> str:
     """
-    Generate a chat response by analysing real log data.
-    Uses ES data to provide informed answers about the user's logs.
+    Generate a chat response by analysing real log data using DeepSeek AI.
+    Uses ES data context to provide informed, intelligent answers & fixes.
     """
     if not server_ids:
         return (
@@ -597,42 +599,53 @@ async def generate_chat_response(
 
     context = await get_chat_context(es, server_ids, message)
 
-    # Simple keyword-based response engine backed by real data
-    msg = message.lower()
+    api_key = settings.DEEPSEEK_API_KEY
+    if not api_key:
+        logger.warning("DEEPSEEK_API_KEY is not configured. Falling back to pattern response.")
+        return f"{context}\n\n*Note: Add DEEPSEEK_API_KEY in .env for full AI root-cause analysis & solution suggestions.*"
 
-    if any(kw in msg for kw in ["error", "problem", "issue", "fail", "bug"]):
+    system_prompt = (
+        "You are LogAI, an expert Site Reliability Engineer and AI Log Analysis Assistant. "
+        "You analyze real-time Elasticsearch log data, detect system anomalies, identify error root causes, "
+        "and provide actionable step-by-step resolution suggestions. "
+        "Format your answer cleanly with markdown **bold** text and bullet points (- ). Keep it direct, helpful, and technical."
+    )
+
+    prompt = (
+        f"### REAL-TIME ELASTICSEARCH LOG CONTEXT:\n{context}\n\n"
+        f"### USER INQUIRY:\n{message}"
+    )
+
+    try:
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        }
+        payload = {
+            "model": getattr(settings, "DEEPSEEK_MODEL", "deepseek-chat"),
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": prompt},
+            ],
+            "temperature": 0.3,
+            "max_tokens": 1024,
+        }
+
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.post(
+                f"{settings.DEEPSEEK_BASE_URL}/chat/completions",
+                json=payload,
+                headers=headers,
+            )
+            response.raise_for_status()
+            data = response.json()
+            ai_text = data["choices"][0]["message"]["content"]
+            return ai_text
+
+    except Exception as exc:
+        logger.error(f"DeepSeek API call failed: {exc}")
         return (
             f"{context}\n\n"
-            "I found the above error-related entries in your logs. "
-            "Would you like me to analyze the root cause, check for patterns, "
-            "or suggest fixes for specific errors?"
-        )
-    elif any(kw in msg for kw in ["anomal", "unusual", "spike", "abnormal"]):
-        return (
-            f"{context}\n\n"
-            "The anomaly detection system has flagged the entries above. "
-            "These may indicate unusual patterns in your infrastructure. "
-            "Would you like details on specific anomalies?"
-        )
-    elif any(kw in msg for kw in ["status", "health", "overview", "summary"]):
-        return (
-            f"{context}\n\n"
-            "This is your current system overview. "
-            "Let me know if you want to drill into a specific server or time range."
-        )
-    elif any(kw in msg for kw in ["hello", "hi", "hey"]):
-        return (
-            "Hello! I'm your LogAI assistant. I can help you:\n"
-            "- Analyze errors and anomalies\n"
-            "- Check server health and status\n"
-            "- Search through your log data\n"
-            "- Identify patterns and trends\n\n"
-            "What would you like to know?"
-        )
-    else:
-        return (
-            f"{context}\n\n"
-            "I've searched your logs for relevant information. "
-            "Could you provide more details about what you'd like to know? "
-            "I can analyze errors, check anomalies, or provide system health summaries."
+            f"⚠️ **DeepSeek AI Analysis Note:** Could not reach AI service ({str(exc)[:100]}). "
+            "I found the relevant log entries above in your Elasticsearch cluster."
         )

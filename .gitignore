@@ -44,6 +44,7 @@ htmlcov/
 # Environment files and credentials
 .env
 .env.*
+DeepSeek -- API.txt
 !.env.example
 env.example
 env-logai-example.txt

@@ -67,6 +67,12 @@ class Settings(BaseSettings):
     ALERTS_EMAIL_SUBJECT_PREFIX: str = "[LogAI Alert]"
     NOTIFICATION_REQUEST_TIMEOUT_SECONDS: int = 10
 
+    # ── DeepSeek AI ──────────────────────────────────────────
+    DEEPSEEK_API_KEY: str = ""
+    DEEPSEEK_BASE_URL: str = "https://api.deepseek.com"
+    DEEPSEEK_MODEL: str = "deepseek-chat"
+    DEEPSEEK_MAX_TOKENS: int = 1024
+
     # ── CORS ─────────────────────────────────────────────────
     ALLOWED_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173,http://localhost"
 
