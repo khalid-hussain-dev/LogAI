@@ -27,7 +27,7 @@ export default function Footer({ onTeamClick, onContactClick }) {
             © {year} <span className="text-cyan-400 font-bold">LogAI</span> — AI-Powered Log Monitoring Platform
           </p>
           <p className="text-[11px] text-slate-600">
-            Built for Advanced Software Engineering · 13 Dimensions Studio
+            Built for Advanced Software Engineering
           </p>
         </div>
 

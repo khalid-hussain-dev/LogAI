@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { X, Linkedin, Github, Mail, ShoppingBag, ExternalLink } from 'lucide-react'
+import khalidPic from '../assets/khalid-hussain-pic.jpg'
 
 const MEMBERS = [
   {
@@ -10,6 +11,7 @@ const MEMBERS = [
     github: 'https://github.com/khalid-hussain-dev',
     playstore: 'https://play.google.com/store/apps/developer?id=13+Dimensions+Studio',
     initials: 'KH',
+    image: khalidPic,
     gradient: 'from-cyan-500 to-blue-600',
     accentColor: '#22D3EE',
   },
@@ -87,11 +89,20 @@ function MemberCard({ member, index }) {
       </div>
 
       {/* Avatar */}
-      <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${member.gradient} flex items-center justify-center text-2xl font-black text-white shadow-xl mb-4 border-4`}
-        style={{ borderColor: `${member.accentColor}30` }}
-      >
-        {member.initials}
-      </div>
+      {member.image ? (
+        <img
+          src={member.image}
+          alt={member.name}
+          className="w-20 h-20 rounded-2xl object-cover shadow-xl mb-4 border-4"
+          style={{ borderColor: `${member.accentColor}30` }}
+        />
+      ) : (
+        <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${member.gradient} flex items-center justify-center text-2xl font-black text-white shadow-xl mb-4 border-4`}
+          style={{ borderColor: `${member.accentColor}30` }}
+        >
+          {member.initials}
+        </div>
+      )}
 
       {/* Name + Role */}
       <h3 className="text-white font-bold text-base mb-0.5">{member.name}</h3>
