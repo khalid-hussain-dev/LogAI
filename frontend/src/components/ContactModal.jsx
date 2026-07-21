@@ -3,9 +3,8 @@ import { X, Send, User, Mail, MessageSquare, CheckCircle, AlertCircle } from 'lu
 import emailjs from '@emailjs/browser'
 
 const SERVICE_ID = 'service_i7ktsli'
-const TEMPLATE_ID = 'template_0m6ghso'
-// NOTE: Replace this with your EmailJS Public Key from Account > API Keys
-const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'YOUR_PUBLIC_KEY'
+const TEMPLATE_ID = 'template_joxs5yj'
+const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'aIyiuPtxeT8MW0fM_'
 
 export default function ContactModal({ open, onClose }) {
   const formRef = useRef(null)
