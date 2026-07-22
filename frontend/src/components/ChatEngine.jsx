@@ -167,7 +167,7 @@ export default function ChatEngine({ fullHeight = false }) {
 
   return (
     <div className={`flex flex-col w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl ${
-      fullHeight ? 'flex-1 min-h-[500px]' : 'max-w-[750px] mx-auto h-[600px]'
+      fullHeight ? 'flex-1 min-h-[500px] h-full' : 'max-w-[750px] mx-auto h-[600px]'
     }`} style={{ backgroundColor: '#081120' }}>
       
       {/* Header */}
@@ -189,8 +189,9 @@ export default function ChatEngine({ fullHeight = false }) {
             onChange={(e) => setSelectedModel(e.target.value)}
             className="px-2 py-1 text-xs rounded-lg border border-cyan-500/20 text-cyan-300 focus:outline-none bg-[#050914] cursor-pointer"
           >
-            <option value="deepseek">DeepSeek AI</option>
-            <option value="localbrain">LogAI Cortex v1.0.4-Beta (Offline ML)</option>
+            <option value="deepseek">DeepSeek</option>
+            <option value="pulse">LogAI Pulse (Tier 0 - Metrics)</option>
+            <option value="localbrain">LogAI Cortex (Tier 1 - Offline ML)</option>
           </select>
 
           <div className="flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">

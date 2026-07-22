@@ -599,6 +599,40 @@ async def generate_chat_response(
             "and start ingesting logs to use the AI chat assistant."
         )
 
+    # Route to Pulse immediately if selected
+    if model == "pulse":
+        try:
+            overview = await get_dashboard_overview(es, server_ids)
+            total_logs = overview.get("total_logs_24h", 0)
+            total_errors = overview.get("total_errors_24h", 0)
+            total_anomalies = overview.get("total_anomalies_24h", 0)
+            active_nodes = len(server_ids)
+            
+            error_rate = round((total_errors / max(total_logs, 1)) * 100, 1)
+            status = "DEGRADED" if total_errors > 0 or total_anomalies > 0 else "OPERATIONAL"
+            status_color = "🔴" if status == "DEGRADED" else "🟢"
+            
+            breakdown_parts = []
+            for k, v in overview.get("severity_breakdown", {}).items():
+                breakdown_parts.append(f"  - **{k.upper()}:** {v}")
+            breakdown_str = "\n".join(breakdown_parts) if breakdown_parts else "  - *No log packets ingested yet.*"
+
+            response = (
+                f"**📊 LogAI Pulse (Zero-Inference System Report)**\n\n"
+                f"**Current Status:** {status_color} **{status}**\n\n"
+                f"**Live Telemetry Metrics (Last 24h):**\n"
+                f"- **Total Logs Ingested:** {total_logs}\n"
+                f"- **System Error Rate:** {error_rate}%\n"
+                f"- **AI Anomalies Flagged:** {total_anomalies}\n"
+                f"- **Active Monitored Nodes:** {active_nodes}\n\n"
+                f"**Severity Breakdown:**\n{breakdown_str}\n\n"
+                f"--- \n*LogAI Pulse queries metrics directly from your Elasticsearch index. No machine learning inference was used.*"
+            )
+            return response
+        except Exception as e:
+            logger.error(f"LogAI Pulse metrics lookup failed: {e}")
+            return "❌ **LogAI Pulse Error:** Failed to aggregate telemetry statistics from Elasticsearch."
+
     # Route to LocalBrain immediately if selected
     if model == "localbrain":
         fallback_res = fallback_ai.predict(message)
