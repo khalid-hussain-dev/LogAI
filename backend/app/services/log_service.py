@@ -18,6 +18,7 @@ from app.db.redis_client import publish_anomaly, publish_log
 from app.services.anomaly_service import AnomalyService
 from app.services.notification_service import dispatch_anomaly_notifications
 from app.ai.fallback_model import fallback_ai
+from app.ai.cortex_prime import cortex_prime_ai
 
 logger = logging.getLogger(__name__)
 anomaly_svc = AnomalyService()
@@ -632,6 +633,11 @@ async def generate_chat_response(
         except Exception as e:
             logger.error(f"LogAI Pulse metrics lookup failed: {e}")
             return "❌ **LogAI Pulse Error:** Failed to aggregate telemetry statistics from Elasticsearch."
+
+    # Route to Cortex Prime (Tier 3) if selected
+    if model == "cortex-prime":
+        fallback_res = cortex_prime_ai.predict(message)
+        return fallback_res["response"]
 
     # Route to Cortex (Tier 1) immediately if selected
     if model == "cortex":
