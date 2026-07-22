@@ -106,6 +106,44 @@ async def root():
 
 @app.get("/health")
 async def health():
-    """Health check endpoint."""
-    return {"status": "ok", "version": settings.APP_VERSION}
+    """Health check endpoint — verifies DB and ES connectivity."""
+    status = "ok"
+    details = {"db": "ok", "es": "ok"}
+    
+    # Check Postgres
+    try:
+        from app.db.postgres import engine
+        from sqlalchemy import text
+        async with engine.begin() as conn:
+            await conn.execute(text("SELECT 1"))
+    except Exception as e:
+        logger.error(f"Health check DB ping failed: {e}")
+        status = "error"
+        details["db"] = "error"
+
+    # Check Elasticsearch
+    try:
+        from app.db.elasticsearch import get_es_client
+        es = get_es_client()
+        if not await es.ping():
+            status = "error"
+            details["es"] = "error"
+    except Exception as e:
+        logger.error(f"Health check ES ping failed: {e}")
+        status = "error"
+        details["es"] = "error"
+
+    if status == "error":
+        from fastapi import HTTPException
+        raise HTTPException(
+            status_code=503,
+            detail={"status": status, "version": settings.APP_VERSION, "details": details}
+        )
+
+    return {
+        "status": status,
+        "version": settings.APP_VERSION,
+        "details": details
+    }
+
 
