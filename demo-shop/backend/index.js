@@ -74,6 +74,10 @@ app.post('/api/chaos/crash', (req, res) => {
 });
 
 // E-commerce Routes
+app.get('/', (req, res) => {
+  res.json({ message: "Welcome to the Demo Shop Backend API! Connect your frontend to this service." });
+});
+
 const products = [
   { id: 1, name: 'LogAI T-Shirt', price: 25.00 },
   { id: 2, name: 'Chaos Engineering Mug', price: 15.00 },
