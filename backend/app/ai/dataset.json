@@ -23,5 +23,85 @@
     "pattern": "Database lock chaos toggled: true",
     "root_cause": "A chaos engineering flag was manually enabled to simulate a database lock scenario.",
     "solution": "1. Disable the database lock chaos flag in the admin panel.\n2. Wait 30 seconds for the existing locks to automatically release.\n3. Verify checkout latency returns to normal baseline."
+  },
+  {
+    "pattern": "FATAL: remaining connection slots are reserved for non-replication superuser connections",
+    "root_cause": "The PostgreSQL database has exhausted all available client connection slots, preventing the application from initiating new queries.",
+    "solution": "1. Implement database connection pooling (e.g., pgBouncer) in your backend service configuration.\n2. Verify that connection handles are properly closed/released in the application code.\n3. Temporarily scale up max_connections inside postgresql.conf if resource limits permit."
+  },
+  {
+    "pattern": "Error: Redis connection to localhost:6379 failed - Connection refused",
+    "root_cause": "The backend was unable to establish a TCP handshake with the Redis service on host localhost at port 6379.",
+    "solution": "1. Verify if the Redis service is active and running via `systemctl status redis` or `docker ps`.\n2. Double check your application environment variables to ensure the host and port match the network settings.\n3. Inspect local firewall configurations or Docker network mappings."
+  },
+  {
+    "pattern": "jwt expired",
+    "root_cause": "The provided JSON Web Token (JWT) has surpassed its payload expiration timestamp (exp).",
+    "solution": "1. Direct the user's browser/client to clear current storage and re-authenticate to retrieve a fresh token.\n2. Verify if client-side refresh token rotation is configured properly.\n3. Check server-side time synchronization (NTP) to prevent clock drift issues."
+  },
+  {
+    "pattern": "Access to fetch at from origin has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present",
+    "root_cause": "Cross-Origin Resource Sharing (CORS) security policy failed because the backend response does not declare the client's hostname in the Access-Control-Allow-Origin header.",
+    "solution": "1. Check CORS middlewares in your backend configuration (e.g., FastAPI's CORSMiddleware or Express cors).\n2. Explicitly add the client app's domain (Vercel URL) to the authorized origins list.\n3. Ensure client requests are using the correct HTTP headers."
+  },
+  {
+    "pattern": "Too Many Requests - 429",
+    "root_cause": "A rate limiter middleware on the server blocked the request because the IP/User has exceeded the allowed transaction volume threshold.",
+    "solution": "1. Implement client-side throttling and exponential backoff to reduce request volume.\n2. Review IP rate-limiting parameters (e.g., in Nginx, Cloudflare, or local Redis rate limiters).\n3. If this is a friendly system, whitelist the source service IP or increase the limits."
+  },
+  {
+    "pattern": "disk watermark [flood_stage] exceeded on one or more nodes",
+    "root_cause": "Elasticsearch disk space utilization has crossed the critical threshold (usually 95%), forcing the cluster to block write operations and index logs in read-only mode.",
+    "solution": "1. Purge older, unused log indices or decrease the log retention window.\n2. Increase the persistent volume storage capacity on your database instance.\n3. Lower disk usage parameters temporarily in Elasticsearch configs if disk space is expected to free up shortly."
+  },
+  {
+    "pattern": "UnhandledPromiseRejectionWarning: Unhandled promise rejection",
+    "root_cause": "A Node.js asynchronous operation failed or rejected, but the code lacks a corresponding `.catch()` block or `try/catch` wrapper to handle the exception.",
+    "solution": "1. Locate the file and line number specified in the traceback.\n2. Ensure the async function call is properly wrapped in a `try...catch` block or uses `.catch(...)`.\n3. Log the rejection stack trace properly to avoid silent application failures."
+  },
+  {
+    "pattern": "getaddrinfo ENOTFOUND",
+    "root_cause": "The application failed to resolve the domain name of an external service/database host to an IP address via DNS lookup.",
+    "solution": "1. Double-check for typos or missing scheme protocols (e.g., `http://`) in the connection URL environment variable.\n2. Verify local DNS configuration or ping the endpoint from the server command line.\n3. If using Docker, check if the service is on the correct network bridge."
+  },
+  {
+    "pattern": "502 Bad Gateway - nginx",
+    "root_cause": "The Nginx reverse proxy acted as a gateway but received an invalid response or connection refusal from the upstream application server.",
+    "solution": "1. Verify if the upstream process (e.g. Node.js backend, Gunicorn/FastAPI) is actually running and listening on the designated port.\n2. Check upstream log files for application-level boot loops or crashes.\n3. Verify Nginx `proxy_pass` configuration addresses match the current backend service address."
+  },
+  {
+    "pattern": "SMTPAuthenticationError: 535 Authentication Credentials Invalid",
+    "root_cause": "The mail server rejected the SMTP client authentication credentials during the SMTP handshake.",
+    "solution": "1. Inspect environmental configurations for invalid mail username or password strings.\n2. If using Gmail/SendGrid/AWS SES, ensure you are utilizing an App Password or API Key rather than your standard account credentials.\n3. Verify SMTP port parameters (use 587 for TLS, 465 for SSL)."
+  },
+  {
+    "pattern": "ENOSPC: no space left on device",
+    "root_cause": "The host system storage device (SSD/HDD) has exhausted all available disk blocks or inode allocations.",
+    "solution": "1. Run `df -h` and `du -sh /*` to pinpoint large directories containing junk/log/temp files.\n2. Clean up old Docker caches with `docker system prune -af`.\n3. Expand the underlying volume storage or attach a secondary disk."
+  },
+  {
+    "pattern": "Error: listen EADDRINUSE: address already in use",
+    "root_cause": "The application server failed to bind to its configured port because another active process is already listening on that port.",
+    "solution": "1. Find and terminate the blocking process using command `kill $(lsof -t -i:PORT)` (Linux) or `stop process` (Windows).\n2. Switch the server port environment variable to an unused alternative (e.g., 3001 instead of 3000).\n3. Check if multiple instances of the server are inadvertently running concurrently."
+  },
+  {
+    "pattern": "MongoServerSelectionError: connection timed out",
+    "root_cause": "The MongoDB database driver was unable to connect to the replica set or database host within the allocated timeout period.",
+    "solution": "1. Verify that your database host is active and running.\n2. Ensure database cluster firewall / security rules allow inbound traffic from your server IP address.\n3. Inspect connection string variables (username, password, parameters)."
+  },
+  {
+    "pattern": "AccessDenied: Access Denied to Amazon S3",
+    "root_cause": "The AWS identity credential (IAM user/role) lacks adequate permissions to execute the requested action (e.g., s3:PutObject) on the S3 bucket.",
+    "solution": "1. Check your bucket's CORS configuration and IAM bucket policies.\n2. Verify that AWS access keys and region settings are correct in the environment configuration.\n3. Make sure the requested object key name does not violate security path filters."
+  },
+  {
+    "pattern": "StripeSignatureVerificationError: No signatures found matching the expected signature for payload",
+    "root_cause": "The Stripe webhook payload signature header does not match the computed hash signature, likely due to an invalid webhook signing secret.",
+    "solution": "1. Go to Stripe Developer Dashboard, find the Webhook endpoint, and copy the exact signing secret (prefixed with `whsec_`).\n2. Double check that the signing secret matches the environment variable configuration.\n3. Confirm that the raw payload body was passed to the signature verifier without parser interference."
+  },
+  {
+    "pattern": "Killed process (node) total-vm: OOM-Killed",
+    "root_cause": "The Linux operating system Kernel terminated the application process (OOM Killer) because the host ran out of physical memory.",
+    "solution": "1. Check the logs for Node.js memory leaks (e.g., using heap snapshots).\n2. Allocate more RAM to the container / server plan on your host provider.\n3. Set Node's maximum heap memory allocation flag explicitly: `--max-old-space-size=4096`."
   }
 ]
