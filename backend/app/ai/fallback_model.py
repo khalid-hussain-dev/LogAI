@@ -54,14 +54,14 @@ class FallbackAI:
         if best_score > 0.3:
             match = self.dataset[best_index]
             response = (
-                f"**LogAI LocalBrain (Offline ML - {best_score*100:.0f}% confidence):**\n\n"
+                f"**LogAI Cortex v1.0.4-Beta (Offline ML - {best_score*100:.0f}% confidence):**\n\n"
                 f"**Root Cause Hypothesis:**\n{match['root_cause']}\n\n"
                 f"**Recommended Fix:**\n{match['solution']}"
             )
             return {"response": response, "confidence": best_score}
         else:
             return {
-                "response": "**LogAI LocalBrain:** Anomaly detected, but it does not match known patterns. Please check recent deployments or database metrics.",
+                "response": "**LogAI Cortex v1.0.4-Beta:** Anomaly detected, but it does not match known patterns. Please check recent deployments or database metrics.",
                 "confidence": best_score
             }
 

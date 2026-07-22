@@ -190,7 +190,7 @@ export default function ChatEngine({ fullHeight = false }) {
             className="px-2 py-1 text-xs rounded-lg border border-cyan-500/20 text-cyan-300 focus:outline-none bg-[#050914] cursor-pointer"
           >
             <option value="deepseek">DeepSeek AI</option>
-            <option value="localbrain">LogAI LocalBrain (Offline ML)</option>
+            <option value="localbrain">LogAI Cortex v1.0.4-Beta (Offline ML)</option>
           </select>
 
           <div className="flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
