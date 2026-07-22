@@ -9,5 +9,81 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <script>
+      const LOGAI_ENDPOINT = "https://solitary-credit-b54e.citstudent1234.workers.dev/";
+
+      function sendLog(level, message, meta = {}) {
+        const payload = {
+          level,
+          message,
+          service: "demo-shop-frontend",
+          source: "browser",
+          host: window.location.hostname,
+          environment: "production",
+          meta: {
+            url: window.location.href,
+            path: window.location.pathname,
+            referrer: document.referrer,
+            userAgent: navigator.userAgent,
+            ...meta
+          }
+        };
+
+        fetch(LOGAI_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+          keepalive: true
+        }).catch(() => {});
+      }
+
+      // Track initial page view
+      sendLog("info", "page_view", { app: "DevOps Swag Shop" });
+
+      // Track unhandled errors
+      window.addEventListener("error", function (event) {
+        sendLog("error", "browser_error", {
+          error: event.message,
+          file: event.filename,
+          line: event.lineno,
+          column: event.colno
+        });
+      });
+
+      // Track promise rejections
+      window.addEventListener("unhandledrejection", function (event) {
+        sendLog("error", "unhandled_promise_rejection", {
+          reason: String(event.reason)
+        });
+      });
+
+      // E-commerce Specific Click Tracking
+      document.addEventListener("click", function (event) {
+        const button = event.target.closest("button");
+        
+        if (button) {
+          const text = button.innerText.trim();
+          
+          if (text === "Add to Cart") {
+            // Find product name in DOM context
+            const card = button.closest('.product-card');
+            const productName = card ? card.querySelector('h3').innerText : 'unknown';
+            sendLog("info", "add_to_cart", { product: productName });
+          } 
+          else if (text.includes("Checkout")) {
+            sendLog("info", "begin_checkout");
+          }
+          else if (button.classList.contains("secret-chaos-btn")) {
+            sendLog("warn", "chaos_panel_opened");
+          }
+          else if (button.classList.contains("trigger-btn") || button.classList.contains("toggle-btn")) {
+            sendLog("warn", "chaos_action_triggered", { action: text });
+          }
+          else {
+            sendLog("info", "button_click", { text: text.slice(0, 80) });
+          }
+        }
+      });
+    </script>
   </body>
 </html>
