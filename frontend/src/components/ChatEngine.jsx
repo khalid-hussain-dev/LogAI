@@ -191,7 +191,9 @@ export default function ChatEngine({ fullHeight = false }) {
           >
             <option value="deepseek">DeepSeek</option>
             <option value="pulse">LogAI Pulse (Tier 0 - Metrics)</option>
-            <option value="localbrain">LogAI Cortex (Tier 1 - Offline ML)</option>
+            <option value="cortex">LogAI Cortex (Tier 1 - Offline ML)</option>
+            <option value="cortex-adaptive">LogAI Cortex Adaptive (Tier 2 - Self-Learning)</option>
+            <option value="cortex-prime" disabled>LogAI Cortex Prime (Tier 3 - Premium) [Coming Soon]</option>
           </select>
 
           <div className="flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">

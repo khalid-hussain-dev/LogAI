@@ -633,9 +633,14 @@ async def generate_chat_response(
             logger.error(f"LogAI Pulse metrics lookup failed: {e}")
             return "❌ **LogAI Pulse Error:** Failed to aggregate telemetry statistics from Elasticsearch."
 
-    # Route to LocalBrain immediately if selected
-    if model == "localbrain":
-        fallback_res = fallback_ai.predict(message)
+    # Route to Cortex (Tier 1) immediately if selected
+    if model == "cortex":
+        fallback_res = fallback_ai.predict(message, exclude_dynamic=True)
+        return fallback_res["response"]
+
+    # Route to Cortex Adaptive (Tier 2) immediately if selected
+    if model in ("localbrain", "cortex-adaptive"):
+        fallback_res = fallback_ai.predict(message, exclude_dynamic=False)
         return fallback_res["response"]
 
     context = await get_chat_context(es, server_ids, message)
