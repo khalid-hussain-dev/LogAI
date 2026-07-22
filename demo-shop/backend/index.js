@@ -10,12 +10,18 @@ app.use(express.json());
 
 // LogAI Integration Logger
 const logToLogAI = async (level, message, meta = {}) => {
-  const LOGAI_URL = process.env.LOGAI_API_URL;
+  let LOGAI_URL = process.env.LOGAI_API_URL;
   const LOGAI_KEY = process.env.LOGAI_API_KEY;
   if (!LOGAI_URL || !LOGAI_KEY) {
     console.log(`[${level.toUpperCase()}] ${message}`);
     return;
   }
+  
+  // Strip trailing slash if present to prevent double-slash issues
+  if (LOGAI_URL.endsWith('/')) {
+    LOGAI_URL = LOGAI_URL.slice(0, -1);
+  }
+
   try {
     await axios.post(`${LOGAI_URL}/api/v1/ingest`, {
       level,
