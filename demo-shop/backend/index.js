@@ -17,7 +17,7 @@ const logToLogAI = async (level, message, meta = {}) => {
     return;
   }
   try {
-    await axios.post(`${LOGAI_URL}/api/v1/logs/ingest`, {
+    await axios.post(`${LOGAI_URL}/api/v1/ingest`, {
       level,
       message,
       service: 'demo-shop-backend',
