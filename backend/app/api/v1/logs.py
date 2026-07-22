@@ -168,7 +168,7 @@ async def chat(
         server_ids = [body.server_id]
 
     response = await log_service.generate_chat_response(
-        es, server_ids, body.message
+        es, server_ids, body.message, body.model
     )
     return ChatResponse(response=response)
 

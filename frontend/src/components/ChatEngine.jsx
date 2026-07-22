@@ -22,6 +22,7 @@ export default function ChatEngine({ fullHeight = false }) {
   const [inputValue, setInputValue] = useState('')
   const [isTyping, setIsTyping] = useState(false)
   const [copiedId, setCopiedId] = useState(null)
+  const [selectedModel, setSelectedModel] = useState("deepseek")
   const messagesEndRef = useRef(null)
   const [searchParams, setSearchParams] = useSearchParams()
   const initialQuery = searchParams.get('query')
@@ -72,7 +73,7 @@ export default function ChatEngine({ fullHeight = false }) {
     try {
       const res = await authFetch(`${BACKEND_URL}/api/v1/chat`, {
         method: 'POST',
-        body: JSON.stringify({ message: text }),
+        body: JSON.stringify({ message: text, model: selectedModel }),
       })
       const data = res?.ok ? await res.json() : null
       const response = data?.response || "I'm having trouble connecting to the analysis engine right now. Please try again."
@@ -183,6 +184,15 @@ export default function ChatEngine({ fullHeight = false }) {
         </div>
         
         <div className="flex items-center gap-3">
+          <select
+            value={selectedModel}
+            onChange={(e) => setSelectedModel(e.target.value)}
+            className="px-2 py-1 text-xs rounded-lg border border-cyan-500/20 text-cyan-300 focus:outline-none bg-[#050914] cursor-pointer"
+          >
+            <option value="deepseek">DeepSeek AI</option>
+            <option value="localbrain">LogAI LocalBrain (Offline ML)</option>
+          </select>
+
           <div className="flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
             <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
             <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">Ready</span>

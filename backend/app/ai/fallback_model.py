@@ -54,16 +54,47 @@ class FallbackAI:
         if best_score > 0.3:
             match = self.dataset[best_index]
             response = (
-                f"**Fallback AI (Fast ML Match - {best_score*100:.0f}% confidence):**\n\n"
+                f"**LogAI LocalBrain (Offline ML - {best_score*100:.0f}% confidence):**\n\n"
                 f"**Root Cause Hypothesis:**\n{match['root_cause']}\n\n"
                 f"**Recommended Fix:**\n{match['solution']}"
             )
             return {"response": response, "confidence": best_score}
         else:
             return {
-                "response": "**Fallback AI Mode:** Anomaly detected, but it does not match known patterns. Please check recent deployments or database metrics.",
+                "response": "**LogAI LocalBrain:** Anomaly detected, but it does not match known patterns. Please check recent deployments or database metrics.",
                 "confidence": best_score
             }
+
+    def add_pattern(self, pattern: str, solution_text: str):
+        """Programmatically append a new dynamically generated pattern to dataset.json and retrain."""
+        if not pattern or not solution_text:
+            return
+        
+        # Check if the pattern already exists to prevent duplication
+        for item in self.dataset:
+            if item["pattern"].lower() == pattern.lower():
+                return
+            
+        new_entry = {
+            "pattern": pattern,
+            "root_cause": "Dynamically cached root cause from active AI analysis.",
+            "solution": solution_text
+        }
+        
+        self.dataset.append(new_entry)
+        
+        try:
+            dataset_path = os.path.join(os.path.dirname(__file__), 'dataset.json')
+            with open(dataset_path, 'w') as f:
+                json.dump(self.dataset, f, indent=2)
+            
+            # Retrain the vectorizer with the new dataset
+            patterns = [item['pattern'] for item in self.dataset]
+            self.vectors = self.vectorizer.fit_transform(patterns)
+            self.is_trained = True
+            logger.info(f"Fallback AI successfully cached and retrained on new pattern: {pattern[:50]}")
+        except Exception as e:
+            logger.error(f"Failed to save dynamic pattern to dataset.json: {e}")
 
 # Instantiate a singleton to be used across the app
 fallback_ai = FallbackAI()

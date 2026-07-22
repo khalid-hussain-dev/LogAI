@@ -169,6 +169,7 @@ class ChatRequest(BaseModel):
     """Body for POST /chat."""
     message: str = Field(..., min_length=1, max_length=2000)
     server_id: Optional[str] = None
+    model: Optional[str] = "deepseek"
 
 
 class ChatResponse(BaseModel):

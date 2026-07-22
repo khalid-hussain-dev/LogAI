@@ -586,6 +586,7 @@ async def generate_chat_response(
     es: AsyncElasticsearch,
     server_ids: List[str],
     message: str,
+    model: str = "deepseek",
 ) -> str:
     """
     Generate a chat response by analysing real log data using DeepSeek AI.
@@ -597,6 +598,11 @@ async def generate_chat_response(
             "Go to the **Servers** page, create a server, copy its API key, "
             "and start ingesting logs to use the AI chat assistant."
         )
+
+    # Route to LocalBrain immediately if selected
+    if model == "localbrain":
+        fallback_res = fallback_ai.predict(message)
+        return fallback_res["response"]
 
     context = await get_chat_context(es, server_ids, message)
 
@@ -642,6 +648,20 @@ async def generate_chat_response(
             response.raise_for_status()
             data = response.json()
             ai_text = data["choices"][0]["message"]["content"]
+            
+            # --- Dynamic Caching Loop ---
+            # If this is a critical log analysis request, cache it in the fallback model
+            if message.startswith("Analyze this critical log from "):
+                log_pattern = ""
+                parts = message.split(":", 1)
+                if len(parts) > 1:
+                    log_pattern = parts[1].strip()
+                else:
+                    log_pattern = message.replace("Analyze this critical log from ", "").strip()
+                
+                if log_pattern:
+                    fallback_ai.add_pattern(log_pattern, ai_text)
+
             return ai_text
 
     except Exception as exc:
