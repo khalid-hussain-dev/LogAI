@@ -83,6 +83,23 @@ export default function DashboardLayout({ children, title, subtitle, servers: pr
   const [alertsLoading, setAlertsLoading] = useState(false)
   const [alertCount, setAlertCount] = useState(0)
   const knownAlertIdsRef = useRef(new Set())
+  const [apiOnline, setApiOnline] = useState(true)
+
+  // Check API health status
+  useEffect(() => {
+    const checkApiHealth = () => {
+      fetch(`${BACKEND_URL}/health`)
+        .then((res) => {
+          setApiOnline(res.ok)
+        })
+        .catch(() => {
+          setApiOnline(false)
+        })
+    }
+    checkApiHealth()
+    const interval = setInterval(checkApiHealth, 15000)
+    return () => clearInterval(interval)
+  }, [])
 
   // Persist sidebar state
   useEffect(() => {
@@ -340,6 +357,14 @@ export default function DashboardLayout({ children, title, subtitle, servers: pr
             </div>
 
             <div className="flex items-center gap-3">
+              {/* API Health Status Indicator */}
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-white/5 bg-white/[0.02] text-[10px] font-black uppercase tracking-widest">
+                <span className={`h-2 w-2 rounded-full ${apiOnline ? 'bg-emerald-400 shadow-[0_0_8px_#34d399] animate-pulse' : 'bg-rose-500 shadow-[0_0_8px_#f43f5e]'}`} />
+                <span className={apiOnline ? 'text-emerald-400' : 'text-rose-400'}>
+                  API: {apiOnline ? 'Online' : 'Offline'}
+                </span>
+              </div>
+
               {/* Alerts */}
               <div className="relative" onClick={(e) => e.stopPropagation()}>
                 <button onClick={handleAlertsClick} className="p-2.5 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.06] hover:border-white/10 transition-all duration-300 cursor-pointer relative text-slate-400 hover:text-white">

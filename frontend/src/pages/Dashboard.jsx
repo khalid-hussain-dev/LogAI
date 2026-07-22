@@ -368,23 +368,30 @@ export default function Dashboard() {
   const fetchAllServersOverview = useCallback(async () => {
     setLoading(true)
     try {
-      const [overviewResponse, serversResponse] = await Promise.all([
-        authFetch(`${BACKEND_URL}/api/v1/servers/dashboard/overview`),
-        authFetch(`${BACKEND_URL}/api/v1/servers`),
-      ])
-
-      const serverData = serversResponse?.ok ? await serversResponse.json() : []
-      setServers(serverData)
-
-      if (overviewResponse?.ok) {
-        const overview = await overviewResponse.json()
-        setTotalLogs(overview.total_logs_24h || 0)
-        setTotalErrors(overview.total_errors_24h || 0)
-        setTotalAnomalies(overview.total_anomalies_24h || 0)
-        setHourlyActivity(normalizeHourlyData(overview.hourly_activity || overview.hourly || []))
+      // 1. Fetch servers list (independent)
+      try {
+        const serversResponse = await authFetch(`${BACKEND_URL}/api/v1/servers`)
+        if (serversResponse?.ok) {
+          const serverData = await serversResponse.json()
+          setServers(serverData)
+        }
+      } catch (err) {
+        console.error("Failed to load servers:", err)
       }
-    } catch {
-      // Keep the dashboard visible even if one of the requests fails.
+
+      // 2. Fetch overview data (independent)
+      try {
+        const overviewResponse = await authFetch(`${BACKEND_URL}/api/v1/servers/dashboard/overview`)
+        if (overviewResponse?.ok) {
+          const overview = await overviewResponse.json()
+          setTotalLogs(overview.total_logs_24h || 0)
+          setTotalErrors(overview.total_errors_24h || 0)
+          setTotalAnomalies(overview.total_anomalies_24h || 0)
+          setHourlyActivity(normalizeHourlyData(overview.hourly_activity || overview.hourly || []))
+        }
+      } catch (err) {
+        console.error("Failed to load overview:", err)
+      }
     } finally {
       setLoading(false)
     }
@@ -393,24 +400,31 @@ export default function Dashboard() {
   const fetchSingleServerMetrics = useCallback(async (server) => {
     setLoading(true)
     try {
-      const [metricsResponse, serversResponse] = await Promise.all([
-        authFetch(`${BACKEND_URL}/api/v1/servers/${server.id}/metrics`),
-        authFetch(`${BACKEND_URL}/api/v1/servers`),
-      ])
-
-      const serverData = serversResponse?.ok ? await serversResponse.json() : []
-      setServers(serverData)
-
-      if (metricsResponse?.ok) {
-        const metrics = await metricsResponse.json()
-        const severity = metrics.severity || {}
-        setTotalLogs(metrics.total_logs || 0)
-        setTotalAnomalies(metrics.total_anomalies || 0)
-        setTotalErrors((severity.error || 0) + (severity.critical || 0))
-        setHourlyActivity(normalizeHourlyData(metrics.hourly || metrics.hourly_activity || []))
+      // 1. Fetch servers list (independent)
+      try {
+        const serversResponse = await authFetch(`${BACKEND_URL}/api/v1/servers`)
+        if (serversResponse?.ok) {
+          const serverData = await serversResponse.json()
+          setServers(serverData)
+        }
+      } catch (err) {
+        console.error("Failed to load servers:", err)
       }
-    } catch {
-      // Keep the previous state on fetch errors.
+
+      // 2. Fetch single server metrics (independent)
+      try {
+        const metricsResponse = await authFetch(`${BACKEND_URL}/api/v1/servers/${server.id}/metrics`)
+        if (metricsResponse?.ok) {
+          const metrics = await metricsResponse.json()
+          const severity = metrics.severity || {}
+          setTotalLogs(metrics.total_logs || 0)
+          setTotalAnomalies(metrics.total_anomalies || 0)
+          setTotalErrors((severity.error || 0) + (severity.critical || 0))
+          setHourlyActivity(normalizeHourlyData(metrics.hourly || metrics.hourly_activity || []))
+        }
+      } catch (err) {
+        console.error("Failed to load metrics:", err)
+      }
     } finally {
       setLoading(false)
     }

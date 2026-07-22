@@ -40,32 +40,44 @@ async function authFetch(url, options = {}) {
   return res;
 }
 
+let activeRefreshPromise = null;
+
 async function refreshAccessToken() {
-  const refreshToken = getRefreshToken();
-  if (!refreshToken || isTokenExpired(refreshToken)) {
-    clearTokens();
-    return false;
+  if (activeRefreshPromise) {
+    return activeRefreshPromise;
   }
 
-  try {
-    const res = await fetch(`${BACKEND_URL}/api/v1/auth/refresh`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ refresh_token: refreshToken }),
-    });
-
-    if (!res.ok) {
+  activeRefreshPromise = (async () => {
+    const refreshToken = getRefreshToken();
+    if (!refreshToken || isTokenExpired(refreshToken)) {
       clearTokens();
       return false;
     }
 
-    const data = await res.json();
-    setTokens(data.access_token, null);
-    return true;
-  } catch {
-    clearTokens();
-    return false;
-  }
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/v1/auth/refresh`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refresh_token: refreshToken }),
+      });
+
+      if (!res.ok) {
+        clearTokens();
+        return false;
+      }
+
+      const data = await res.json();
+      setTokens(data.access_token, null);
+      return true;
+    } catch {
+      clearTokens();
+      return false;
+    } finally {
+      activeRefreshPromise = null;
+    }
+  })();
+
+  return activeRefreshPromise;
 }
 
 export const loginWithCredentials = async (email, password) => {
