@@ -295,8 +295,16 @@ function AiCore({ statusColor, totalAnomalies, replaying }) {
 }
 
 function LiveLogRow({ log, index }) {
+  const navigate = useNavigate()
   const level = (log.level || 'debug').toLowerCase()
   const style = LEVEL_STYLES[level] || LEVEL_STYLES.debug
+  
+  const handleAskAI = (e) => {
+    e.stopPropagation()
+    const query = encodeURIComponent(`Analyze this critical log from ${log.service || 'system'}: ${log.message}`)
+    navigate(`/chat?query=${query}`)
+  }
+
   return (
     <motion.div
       layout
@@ -304,7 +312,7 @@ function LiveLogRow({ log, index }) {
       animate={{ opacity: 1, x: 0, scale: 1 }}
       exit={{ opacity: 0, x: 20, scale: 0.98 }}
       transition={{ duration: 0.28, delay: Math.min(index * 0.015, 0.12) }}
-      className="group grid grid-cols-[76px_96px_minmax(0,1fr)_126px] items-center gap-3 border-b border-white/[0.055] px-4 py-3 transition-colors hover:bg-white/[0.035]"
+      className="group grid grid-cols-[76px_96px_minmax(0,1fr)_160px] items-center gap-3 border-b border-white/[0.055] px-4 py-3 transition-colors hover:bg-white/[0.035]"
       style={{ boxShadow: log.anomaly ? style.glow : 'none' }}
     >
       <span className="font-mono text-[12px] text-slate-500">{formatTime(log.timestamp)}</span>
@@ -318,9 +326,21 @@ function LiveLogRow({ log, index }) {
         <p className="truncate font-mono text-sm text-slate-200">{log.message}</p>
         <p className="mt-0.5 truncate text-xs text-slate-500">{log.service || log.server_name || 'application'} / {log.host || 'live-node'}</p>
       </div>
-      <span className="justify-self-end rounded-full border border-white/10 px-2.5 py-1 text-xs text-slate-400">
-        {log.anomaly ? 'AI flagged' : 'streamed'}
-      </span>
+      <div className="justify-self-end flex items-center gap-2">
+        <span className="rounded-full border border-white/10 px-2.5 py-1 text-xs text-slate-400">
+          {log.anomaly ? 'AI flagged' : 'streamed'}
+        </span>
+        {level === 'critical' && (
+          <button 
+            onClick={handleAskAI}
+            title="Ask AI about this log"
+            className="flex items-center gap-1 rounded-lg border border-purple-500/30 bg-purple-500/10 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-purple-400 hover:bg-purple-500/20 hover:border-purple-500/50 transition-colors cursor-pointer"
+          >
+            <Sparkles className="h-3 w-3" />
+            Ask AI
+          </button>
+        )}
+      </div>
     </motion.div>
   )
 }

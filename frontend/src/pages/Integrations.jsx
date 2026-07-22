@@ -77,6 +77,7 @@ export default function Integrations() {
   const [saving, setSaving] = useState(false)
   const [testingChannel, setTestingChannel] = useState(null)
   const [settings, setSettings] = useState(INITIAL_SETTINGS)
+  const [selectedServerId, setSelectedServerId] = useState('')
 
   useEffect(() => {
     const load = async () => {
@@ -88,7 +89,11 @@ export default function Integrations() {
         ])
 
         if (serversResponse?.ok) {
-          setServers(await serversResponse.json())
+          const serversData = await serversResponse.json()
+          setServers(serversData)
+          if (serversData.length > 0 && !selectedServerId) {
+            setSelectedServerId(serversData[0].id)
+          }
         }
 
         if (integrationsResponse?.ok) {
@@ -200,8 +205,8 @@ export default function Integrations() {
     setSettings(prev => ({ ...prev, [field]: value }))
   }
 
-  const defaultServer = servers[0]
-  const apiKey = defaultServer?.api_key || 'YOUR_API_KEY'
+  const currentServer = servers.find(s => s.id === selectedServerId) || servers[0]
+  const apiKey = currentServer?.api_key || 'YOUR_API_KEY'
   const connectedChannels = [
     settings.slack_enabled && settings.slack_webhook_url.trim(),
     settings.email_enabled && settings.email_recipients.trim() && settings.email_service_ready,
@@ -233,7 +238,7 @@ export default function Integrations() {
   const webhookPayload = `{
   "event": "anomaly_detected",
   "app": "LogAI",
-  "server_name": "${defaultServer?.name || 'Demo Server'}",
+  "server_name": "${currentServer?.name || 'Demo Server'}",
   "level": "critical",
   "message": "Synthetic webhook test from LogAI",
   "anomaly": true,
@@ -434,7 +439,7 @@ export default function Integrations() {
         <SectionCard
           icon={Plug}
           title="Quick Start"
-          subtitle="Create a server in LogAI, then use its API key to send logs."
+          subtitle="Select a server to view its integration instructions."
           color={COLORS.accentBlue}
         >
           {servers.length === 0 ? (
@@ -442,7 +447,21 @@ export default function Integrations() {
               Create your first server {'->'}
             </button>
           ) : (
-            <p className="text-base text-gray-400">Using server: <span className="text-white font-medium">{defaultServer?.name}</span></p>
+            <div className="flex flex-col gap-2">
+              <label className="text-sm text-gray-400">Select Server</label>
+              <select
+                value={selectedServerId}
+                onChange={(e) => setSelectedServerId(e.target.value)}
+                className="w-full md:w-1/2 px-4 py-3 rounded-xl border text-white bg-transparent focus:outline-none focus:border-blue-500 cursor-pointer"
+                style={{ borderColor: 'rgba(255,255,255,0.1)', backgroundColor: COLORS.background }}
+              >
+                {servers.map(s => (
+                  <option key={s.id} value={s.id} className="bg-[#0B1220]">
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           )}
         </SectionCard>
 

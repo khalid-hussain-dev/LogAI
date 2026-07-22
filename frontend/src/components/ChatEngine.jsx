@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { Send, Sparkles, Trash2, Copy, Check, MessageSquare, RefreshCw } from 'lucide-react'
 import { authFetch } from '../services/auth'
 import { useAuth } from '../context/AuthContext'
+import { useSearchParams } from 'react-router-dom'
 import { brandAssets } from '../assets/brand'
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || ''
@@ -22,6 +23,16 @@ export default function ChatEngine({ fullHeight = false }) {
   const [isTyping, setIsTyping] = useState(false)
   const [copiedId, setCopiedId] = useState(null)
   const messagesEndRef = useRef(null)
+  const [searchParams, setSearchParams] = useSearchParams()
+  const initialQuery = searchParams.get('query')
+
+  // Auto-send query from URL if present
+  useEffect(() => {
+    if (initialQuery && !isTyping) {
+      handleSend(initialQuery)
+      setSearchParams(new URLSearchParams()) // clear param after sending
+    }
+  }, [initialQuery])
 
   // Load user-scoped history whenever active user changes
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { Zap, Database, GitBranch, Cpu, Globe } from 'lucide-react'
+import { Zap, Database, Cpu, Globe } from 'lucide-react'
 
 const TECH_STACK = [
   { icon: Zap, label: 'FastAPI', color: '#22D3EE' },
@@ -6,7 +6,6 @@ const TECH_STACK = [
   { icon: Database, label: 'Elasticsearch', color: '#F59E0B' },
   { icon: Database, label: 'PostgreSQL', color: '#818CF8' },
   { icon: Cpu, label: 'Redis', color: '#FB7185' },
-  { icon: GitBranch, label: 'DeepSeek AI', color: '#A78BFA' },
 ]
 
 export default function Footer({ onTeamClick, onContactClick }) {

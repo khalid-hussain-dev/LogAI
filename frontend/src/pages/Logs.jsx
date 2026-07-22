@@ -150,14 +150,29 @@ export default function Logs() {
                       <td className="py-3.5 px-5 text-slate-400 text-sm font-medium">{log.service || '—'}</td>
                       <td className="py-3.5 px-5 text-slate-400 text-sm font-medium">{log.server_name || '—'}</td>
                       <td className="py-3.5 px-5 text-right whitespace-nowrap">
-                        {isAnomaly ? (
-                          <span className="inline-flex items-center gap-1.5 text-xs font-bold text-rose-400">
-                            <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-pulse shadow-[0_0_8px_#f43f5e]" />
-                            {(log.anomaly_score * 100).toFixed(0)}%
-                          </span>
-                        ) : (
-                          <span className="text-xs text-slate-600 font-semibold">—</span>
-                        )}
+                        <div className="flex items-center justify-end gap-3">
+                          {log.level === 'critical' && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                const query = encodeURIComponent(`Analyze this critical log from ${log.service || 'system'}: ${log.message}`)
+                                window.location.href = `/chat?query=${query}`
+                              }}
+                              title="Ask AI about this log"
+                              className="flex items-center gap-1 rounded-lg border border-purple-500/30 bg-purple-500/10 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-purple-400 hover:bg-purple-500/20 hover:border-purple-500/50 transition-colors cursor-pointer"
+                            >
+                              Ask AI
+                            </button>
+                          )}
+                          {isAnomaly ? (
+                            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-rose-400">
+                              <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-pulse shadow-[0_0_8px_#f43f5e]" />
+                              {(log.anomaly_score * 100).toFixed(0)}%
+                            </span>
+                          ) : (
+                            <span className="text-xs text-slate-600 font-semibold">—</span>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   )
