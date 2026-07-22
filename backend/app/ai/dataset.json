@@ -1,0 +1,27 @@
+[
+  {
+    "pattern": "Manual fatal crash initiated by admin!",
+    "root_cause": "The system received a manual shutdown command from an administrator or a chaos engineering tool.",
+    "solution": "1. Verify if this was a scheduled test or unauthorized access.\n2. Restart the backend service if it does not auto-recover.\n3. Check audit logs to identify which admin account triggered the crash."
+  },
+  {
+    "pattern": "POST /api/checkout failed with 502",
+    "root_cause": "The upstream checkout API container crashed or is failing health checks.",
+    "solution": "1. Check the logs of the `checkout-api` container for Out Of Memory (OOM) errors.\n2. Ensure the container has enough resources allocated.\n3. Verify that the payment gateway is responding in a timely manner to prevent timeouts."
+  },
+  {
+    "pattern": "Checkout failed: Payment gateway timeout while processing transaction intent",
+    "root_cause": "The payment gateway (e.g., Stripe) is taking too long to respond, causing the internal request to timeout and fail.",
+    "solution": "1. Check the third-party payment gateway's status page.\n2. Increase the timeout limit in the checkout worker.\n3. Implement a retry mechanism with exponential backoff for payment intents."
+  },
+  {
+    "pattern": "Checkout API experiencing high latency due to database lock on orders table",
+    "root_cause": "A long-running transaction or dead-tuple buildup is locking the orders table, preventing new checkouts from completing.",
+    "solution": "1. Run `SELECT * FROM pg_stat_activity` to identify blocking PIDs.\n2. Terminate the locked transaction.\n3. Run a `VACUUM` on the orders table to clear dead tuples.\n4. Optimize the checkout transaction to commit faster."
+  },
+  {
+    "pattern": "Database lock chaos toggled: true",
+    "root_cause": "A chaos engineering flag was manually enabled to simulate a database lock scenario.",
+    "solution": "1. Disable the database lock chaos flag in the admin panel.\n2. Wait 30 seconds for the existing locks to automatically release.\n3. Verify checkout latency returns to normal baseline."
+  }
+]

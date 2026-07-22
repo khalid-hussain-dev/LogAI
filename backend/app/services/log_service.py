@@ -17,6 +17,7 @@ from app.core.config import settings
 from app.db.redis_client import publish_anomaly, publish_log
 from app.services.anomaly_service import AnomalyService
 from app.services.notification_service import dispatch_anomaly_notifications
+from app.ai.fallback_model import fallback_ai
 
 logger = logging.getLogger(__name__)
 anomaly_svc = AnomalyService()
@@ -601,8 +602,9 @@ async def generate_chat_response(
 
     api_key = settings.DEEPSEEK_API_KEY
     if not api_key:
-        logger.warning("DEEPSEEK_API_KEY is not configured. Falling back to pattern response.")
-        return f"{context}\n\n*Note: Add DEEPSEEK_API_KEY in .env for full AI root-cause analysis & solution suggestions.*"
+        logger.warning("DEEPSEEK_API_KEY is not configured. Falling back to local ML model.")
+        fallback_res = fallback_ai.predict(message)
+        return fallback_res["response"]
 
     system_prompt = (
         "You are LogAI, an expert Site Reliability Engineer and AI Log Analysis Assistant. "
@@ -643,9 +645,10 @@ async def generate_chat_response(
             return ai_text
 
     except Exception as exc:
-        logger.error(f"DeepSeek API call failed: {exc}")
+        logger.error(f"DeepSeek API call failed: {exc}. Using fallback AI.")
+        fallback_res = fallback_ai.predict(message)
         return (
-            f"{context}\n\n"
-            f"⚠️ **DeepSeek AI Analysis Note:** Could not reach AI service ({str(exc)[:100]}). "
-            "I found the relevant log entries above in your Elasticsearch cluster."
+            f"⚠️ **DeepSeek AI Offline (Using Fallback ML Model):**\n\n"
+            f"{fallback_res['response']}\n\n"
+            f"--- \n*Context retrieved from Elasticsearch:*\n{context}"
         )
