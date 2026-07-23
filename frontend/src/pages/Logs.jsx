@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { RefreshCw, FileText } from 'lucide-react'
+import { RefreshCw, FileText, Copy, Check } from 'lucide-react'
 import DashboardLayout from '../components/DashboardLayout'
 import { authFetch } from '../services/auth'
 import { SkeletonTable } from '../components/Skeleton'
@@ -54,6 +54,19 @@ export default function Logs() {
   const formatTime = (ts) => ts ? new Date(typeof ts === 'number' ? ts : parseInt(ts)).toLocaleString() : '—'
   const currentPage = Math.floor(filters.offset / filters.limit) + 1
   const totalPages = Math.ceil(total / filters.limit)
+
+  const [copiedLogId, setCopiedLogId] = useState(null)
+
+  const handleCopy = async (e, log) => {
+    e.stopPropagation()
+    try {
+      await navigator.clipboard.writeText(log.message)
+      setCopiedLogId(log.id)
+      setTimeout(() => setCopiedLogId(null), 2000)
+    } catch (err) {
+      console.error('Failed to copy log:', err)
+    }
+  }
 
   const inputStyle = { backgroundColor: COLORS.background, borderColor: 'rgba(255,255,255,0.1)' }
 
@@ -145,7 +158,16 @@ export default function Logs() {
                         </span>
                       </td>
                       <td className="py-3.5 px-5 text-slate-200 font-mono text-sm max-w-[480px] truncate" title={log.message}>
-                        {log.message}
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="truncate">{log.message}</span>
+                          <button
+                            onClick={(e) => handleCopy(e, log)}
+                            title="Copy log to clipboard"
+                            className="p-1 rounded border border-white/10 bg-white/[0.02] opacity-0 group-hover:opacity-100 hover:bg-white/10 text-slate-400 hover:text-white transition-all cursor-pointer flex-shrink-0"
+                          >
+                            {copiedLogId === log.id ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                          </button>
+                        </div>
                       </td>
                       <td className="py-3.5 px-5 text-slate-400 text-sm font-medium">{log.service || '—'}</td>
                       <td className="py-3.5 px-5 text-slate-400 text-sm font-medium">{log.server_name || '—'}</td>

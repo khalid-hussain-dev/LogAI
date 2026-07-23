@@ -77,7 +77,7 @@ class CortexPrimeAI:
             best_index = similarities.argmax()
             best_score = float(similarities[best_index])
 
-            if best_score > 0.15:
+            if best_score > 0.02:
                 match = self.entries[best_index]
 
                 category = match.get('category', 'Unknown Category')

@@ -68,8 +68,8 @@ class FallbackAI:
 
         model_name = "LogAI Cortex" if exclude_dynamic else "LogAI Cortex Adaptive"
 
-        # If similarity is above a certain threshold (e.g., 0.3), return the predefined solution
-        if best_score > 0.3:
+        # If similarity is above a certain threshold (e.g., 0.02), return the predefined solution
+        if best_score > 0.02:
             match = dataset[best_index]
             response = (
                 f"**{model_name} (Offline ML - {best_score*100:.0f}% confidence):**\n\n"
