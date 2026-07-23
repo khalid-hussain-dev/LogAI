@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { Send, Sparkles, Trash2, Copy, Check, MessageSquare, RefreshCw, Zap, Brain, ChevronRight } from 'lucide-react'
+import { Send, Trash2, Copy, Check, RefreshCw, Zap, Brain } from 'lucide-react'
 import { authFetch } from '../services/auth'
 import { useAuth } from '../context/AuthContext'
 import { useSearchParams } from 'react-router-dom'
@@ -21,8 +21,8 @@ const MODEL_META = {
     color: '#34d399',
     badge: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400',
     desc: 'Zero-inference metrics report — click any keyword or just send',
-    inputPlaceholder: 'Or type a keyword (status, overview, metrics...)',
-    inputDisabled: false,
+    inputPlaceholder: 'Text input disabled for LogAI Pulse. Click a keyword chip!',
+    inputDisabled: true,
   },
   cortex: {
     label: 'LogAI Cortex',
@@ -88,7 +88,7 @@ export default function ChatEngine({ fullHeight = false }) {
     localStorage.setItem(MODEL_STORAGE_KEY, val)
   }
 
-  // Auto-send query from URL if present (also read model from URL)
+  // Auto-send query from URL if present
   const initialQuery = searchParams.get('query')
   const urlModel = searchParams.get('model')
 
@@ -129,7 +129,7 @@ export default function ChatEngine({ fullHeight = false }) {
   const fetchSuggestions = useCallback(async (model) => {
     setLoadingSuggestions(true)
     try {
-      const res = await authFetch(`${BACKEND_URL}/api/v1/chat/suggestions?model=${model}&limit=5`)
+      const res = await authFetch(`${BACKEND_URL}/api/v1/chat/suggestions?model=${model}&limit=4`)
       if (res?.ok) {
         const data = await res.json()
         setSuggestions(data)
@@ -282,75 +282,15 @@ export default function ChatEngine({ fullHeight = false }) {
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-5 py-5 space-y-5 scrollbar-thin" style={{ backgroundColor: '#050914' }}>
         {messages.length === 0 ? (
-          <div className="flex flex-col h-full">
-            {/* Model description banner */}
-            <div className="rounded-xl border px-4 py-3 mb-4 flex-shrink-0" style={{ backgroundColor: `${meta.color}08`, borderColor: `${meta.color}20` }}>
-              <div className="flex items-center gap-2 mb-1">
-                <Zap className="w-3.5 h-3.5" style={{ color: meta.color }} />
-                <span className="text-xs font-bold" style={{ color: meta.color }}>{meta.label} — Active</span>
-              </div>
-              <p className="text-xs text-slate-400">{meta.desc}</p>
+          <div className="flex flex-col items-center justify-center h-full text-center max-w-md mx-auto py-8">
+            <div className="w-12 h-12 rounded-2xl border flex items-center justify-center mb-3 shadow-xl"
+              style={{ backgroundColor: `${meta.color}08`, borderColor: `${meta.color}20` }}>
+              <Brain className="w-6 h-6" style={{ color: meta.color }} />
             </div>
-
-            {/* Suggestions panel */}
-            <div className="flex-1">
-              {selectedModel === 'pulse' ? (
-                <div>
-                  <p className="text-xs text-slate-500 mb-3 font-medium uppercase tracking-wider">Quick Keywords</p>
-                  <div className="flex flex-wrap gap-2">
-                    {(suggestions.keywords || []).map((kw, i) => (
-                      <button key={i} onClick={() => handleSend(kw)}
-                        className="px-3 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer hover:scale-105"
-                        style={{ backgroundColor: `${meta.color}10`, borderColor: `${meta.color}30`, color: meta.color }}>
-                        {kw}
-                      </button>
-                    ))}
-                  </div>
-                  <p className="text-xs text-slate-600 mt-4">LogAI Pulse ignores your text — it always returns live metrics from Elasticsearch.</p>
-                </div>
-              ) : (
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">
-                      {loadingSuggestions ? 'Scanning your logs…' : 'Suggested Logs to Analyze'}
-                    </p>
-                    {loadingSuggestions && <RefreshCw className="w-3 h-3 text-slate-600 animate-spin" />}
-                  </div>
-
-                  {!loadingSuggestions && suggestions.suggestions?.length === 0 && (
-                    <div className="text-center py-8">
-                      <p className="text-xs text-slate-600">No matching logs found in your recent error history.</p>
-                      <p className="text-xs text-slate-700 mt-1">Paste any raw log message below to analyze it manually.</p>
-                    </div>
-                  )}
-
-                  <div className="space-y-2">
-                    {(suggestions.suggestions || []).map((s, i) => (
-                      <button key={i} onClick={() => handleSend(s.message)}
-                        className="w-full text-left px-3 py-2.5 rounded-xl border border-white/[0.06] bg-white/[0.01] hover:bg-white/[0.03] transition-all group flex items-start gap-3 cursor-pointer">
-                        <span className={`flex-shrink-0 mt-0.5 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase border ${LEVEL_COLORS[s.level] || LEVEL_COLORS.info}`}>
-                          {s.level}
-                        </span>
-                        <div className="min-w-0 flex-1">
-                          <p className="text-xs text-slate-300 font-mono truncate group-hover:text-white transition-colors">{s.message}</p>
-                          <div className="flex items-center gap-2 mt-0.5">
-                            {s.service && <span className="text-[10px] text-slate-600">{s.service}</span>}
-                            {s.confidence != null && (
-                              <span className="text-[10px] font-semibold" style={{ color: meta.color }}>{s.confidence}% match</span>
-                            )}
-                          </div>
-                        </div>
-                        <ChevronRight className="w-3.5 h-3.5 text-slate-700 group-hover:text-slate-400 flex-shrink-0 mt-1 transition-colors" />
-                      </button>
-                    ))}
-                  </div>
-
-                  {suggestions.suggestions?.length > 0 && (
-                    <p className="text-[10px] text-slate-700 mt-3">↑ These are real logs from your servers that this model can analyze. You can also paste any custom log below.</p>
-                  )}
-                </div>
-              )}
-            </div>
+            <h3 className="text-sm font-bold text-white mb-1">LogAI Chat Assistant</h3>
+            <p className="text-xs text-slate-400 mb-4 leading-relaxed">
+              Analyze metrics, explain errors, and get recommended actions for your log events using <strong>{meta.label}</strong>.
+            </p>
           </div>
         ) : (
           messages.map((msg) => {
@@ -408,16 +348,65 @@ export default function ChatEngine({ fullHeight = false }) {
         <div ref={messagesEndRef} />
       </div>
 
+      {/* Suggested Panel (Always visible above input) */}
+      <div className="px-5 py-3 border-t border-white/[0.07] bg-[#070e1b] flex-shrink-0">
+        {selectedModel === 'pulse' ? (
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">Keywords:</span>
+            {(suggestions.keywords || []).map((kw, i) => (
+              <button key={i} onClick={() => handleSend(kw)}
+                className="px-2.5 py-1 rounded-full text-[11px] font-semibold border transition-all cursor-pointer hover:scale-105"
+                style={{ backgroundColor: `${meta.color}10`, borderColor: `${meta.color}30`, color: meta.color }}>
+                {kw}
+              </button>
+            ))}
+          </div>
+        ) : (
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">
+                {loadingSuggestions ? 'Scanning logs…' : 'Suggested Logs to Analyze'}
+              </span>
+              {loadingSuggestions && <RefreshCw className="w-3 h-3 text-slate-600 animate-spin" />}
+            </div>
+            
+            {!loadingSuggestions && (suggestions.suggestions || []).length === 0 ? (
+              <p className="text-[10px] text-slate-600">No matching logs in your database for this model. Paste any custom log below.</p>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {(suggestions.suggestions || []).slice(0, 4).map((s, i) => (
+                  <button key={i} onClick={() => handleSend(s.message)}
+                    className="text-left px-3 py-2 rounded-xl border border-white/[0.05] bg-white/[0.005] hover:bg-white/[0.02] hover:border-cyan-500/25 transition-all group flex items-start gap-2.5 cursor-pointer max-w-full overflow-hidden">
+                    <span className={`flex-shrink-0 mt-0.5 px-1 rounded text-[8px] font-bold uppercase border ${LEVEL_COLORS[s.level] || LEVEL_COLORS.info}`}>
+                      {s.level}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[11px] text-slate-400 font-mono truncate group-hover:text-white transition-colors">{s.message}</p>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        {s.service && <span className="text-[9px] text-slate-600 truncate">{s.service}</span>}
+                        {s.confidence != null && (
+                          <span className="text-[9px] font-semibold flex-shrink-0" style={{ color: meta.color }}>{s.confidence}% match</span>
+                        )}
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
       {/* Input */}
       <form onSubmit={onSubmit} className="border-t border-white/[0.07] px-5 py-3.5 flex-shrink-0" style={{ backgroundColor: '#0B1220' }}>
         <div className="flex items-center gap-3 relative">
           <input type="text" value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            disabled={isTyping}
+            disabled={isTyping || meta.inputDisabled}
             placeholder={meta.inputPlaceholder}
-            className="flex-1 pl-4 pr-14 py-3 rounded-xl text-sm text-white placeholder-slate-600 focus:outline-none focus:ring-1 transition-all duration-200 border"
+            className="flex-1 pl-4 pr-14 py-3 rounded-xl text-sm text-white placeholder-slate-600 focus:outline-none focus:ring-1 transition-all duration-200 border disabled:opacity-50 disabled:cursor-not-allowed"
             style={{ backgroundColor: '#050914', borderColor: `${meta.color}20`, focusRingColor: `${meta.color}40` }} />
-          <button type="submit" disabled={!inputValue.trim() || isTyping}
+          <button type="submit" disabled={(!inputValue.trim() && !meta.inputDisabled) || isTyping}
             className="absolute right-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed text-white"
             style={{ backgroundColor: inputValue.trim() ? meta.color : '#1E293B' }}>
             <Send className="w-3.5 h-3.5" />

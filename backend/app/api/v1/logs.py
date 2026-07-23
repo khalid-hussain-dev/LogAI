@@ -176,7 +176,7 @@ async def chat(
 @router.get("/chat/suggestions")
 async def get_chat_suggestions(
     model: str = "deepseek",
-    limit: int = 5,
+    limit: int = 4,
     user: User = Depends(get_current_user),
     es: AsyncElasticsearch = Depends(get_es),
     db: AsyncSession = Depends(get_db),

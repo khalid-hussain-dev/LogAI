@@ -587,7 +587,7 @@ async def get_model_suggestions(
     es: AsyncElasticsearch,
     server_ids: List[str],
     model: str,
-    limit: int = 5,
+    limit: int = 4,
 ) -> List[Dict[str, Any]]:
     """
     Return a list of recent real logs from the user's servers that the
@@ -607,7 +607,10 @@ async def get_model_suggestions(
                 ]
             }
         },
-        sort=[{"timestamp": {"order": "desc"}}],
+        sort=[
+            {"anomaly_score": {"order": "desc"}},
+            {"timestamp": {"order": "desc"}}
+        ],
     )
 
     recent_logs = [hit["_source"] for hit in resp["hits"]["hits"]]
