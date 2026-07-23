@@ -152,17 +152,23 @@ export default function Logs() {
                       <td className="py-3.5 px-5 text-right whitespace-nowrap">
                         <div className="flex items-center justify-end gap-3">
                           {log.level === 'critical' && (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                const query = encodeURIComponent(`Analyze this critical log from ${log.service || 'system'}: ${log.message}`)
-                                window.location.href = `/chat?query=${query}`
-                              }}
-                              title="Ask AI about this log"
-                              className="flex items-center gap-1 rounded-lg border border-purple-500/30 bg-purple-500/10 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-purple-400 hover:bg-purple-500/20 hover:border-purple-500/50 transition-colors cursor-pointer"
-                            >
-                              Ask AI
-                            </button>
+                            <div className="flex flex-col items-end gap-0.5">
+                              <span className="text-[9px] text-slate-600">
+                                rec: {log.level === 'critical' ? 'Prime v2' : log.level === 'error' ? 'Prime v1' : 'Adaptive'}
+                              </span>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  const currentModel = localStorage.getItem('logai_selected_model') || 'deepseek'
+                                  const query = encodeURIComponent(log.message)
+                                  window.location.href = `/chat?query=${query}&model=${currentModel}`
+                                }}
+                                title="Ask AI using your selected model"
+                                className="flex items-center gap-1 rounded-lg border border-purple-500/30 bg-purple-500/10 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-purple-400 hover:bg-purple-500/20 hover:border-purple-500/50 transition-colors cursor-pointer"
+                              >
+                                Ask AI
+                              </button>
+                            </div>
                           )}
                           {isAnomaly ? (
                             <span className="inline-flex items-center gap-1.5 text-xs font-bold text-rose-400">

@@ -172,3 +172,26 @@ async def chat(
     )
     return ChatResponse(response=response)
 
+
+@router.get("/chat/suggestions")
+async def get_chat_suggestions(
+    model: str = "deepseek",
+    limit: int = 5,
+    user: User = Depends(get_current_user),
+    es: AsyncElasticsearch = Depends(get_es),
+    db: AsyncSession = Depends(get_db),
+):
+    """Return suggested log queries for the selected model, sourced from the user's real ES logs."""
+    from app.services import server_service
+    user_servers = await server_service.list_servers(db, user.id)
+    server_ids = [str(item["server"].id) for item in user_servers if item["server"].is_active]
+
+    if model == "pulse":
+        return {
+            "type": "keywords",
+            "keywords": ["status", "health check", "report", "overview", "metrics summary", "error rate"],
+            "suggestions": []
+        }
+
+    suggestions = await log_service.get_model_suggestions(es, server_ids, model, limit)
+    return {"type": "logs", "suggestions": suggestions, "keywords": []}

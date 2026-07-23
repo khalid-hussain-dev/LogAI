@@ -298,12 +298,21 @@ function LiveLogRow({ log, index }) {
   const navigate = useNavigate()
   const level = (log.level || 'debug').toLowerCase()
   const style = LEVEL_STYLES[level] || LEVEL_STYLES.debug
-  
+
+  const getRecommendedModel = () => {
+    if (level === 'critical') return { key: 'cortex-prime-v2', label: 'Prime v2' }
+    if (level === 'error') return { key: 'cortex-prime', label: 'Prime v1' }
+    return { key: 'cortex-adaptive', label: 'Adaptive' }
+  }
+
   const handleAskAI = (e) => {
     e.stopPropagation()
-    const query = encodeURIComponent(`Analyze this critical log from ${log.service || 'system'}: ${log.message}`)
-    navigate(`/chat?query=${query}`)
+    const currentModel = localStorage.getItem('logai_selected_model') || 'deepseek'
+    const query = encodeURIComponent(log.message)
+    navigate(`/chat?query=${query}&model=${currentModel}`)
   }
+
+  const rec = getRecommendedModel()
 
   return (
     <motion.div
@@ -312,7 +321,7 @@ function LiveLogRow({ log, index }) {
       animate={{ opacity: 1, x: 0, scale: 1 }}
       exit={{ opacity: 0, x: 20, scale: 0.98 }}
       transition={{ duration: 0.28, delay: Math.min(index * 0.015, 0.12) }}
-      className="group grid grid-cols-[76px_96px_minmax(0,1fr)_160px] items-center gap-3 border-b border-white/[0.055] px-4 py-3 transition-colors hover:bg-white/[0.035]"
+      className="group grid grid-cols-[76px_96px_minmax(0,1fr)_180px] items-center gap-3 border-b border-white/[0.055] px-4 py-3 transition-colors hover:bg-white/[0.035]"
       style={{ boxShadow: log.anomaly ? style.glow : 'none' }}
     >
       <span className="font-mono text-[12px] text-slate-500">{formatTime(log.timestamp)}</span>
@@ -331,14 +340,17 @@ function LiveLogRow({ log, index }) {
           {log.anomaly ? 'AI flagged' : 'streamed'}
         </span>
         {level === 'critical' && (
-          <button 
-            onClick={handleAskAI}
-            title="Ask AI about this log"
-            className="flex items-center gap-1 rounded-lg border border-purple-500/30 bg-purple-500/10 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-purple-400 hover:bg-purple-500/20 hover:border-purple-500/50 transition-colors cursor-pointer"
-          >
-            <Sparkles className="h-3 w-3" />
-            Ask AI
-          </button>
+          <div className="flex flex-col items-end gap-0.5">
+            <span className="text-[9px] text-slate-600">rec: {rec.label}</span>
+            <button
+              onClick={handleAskAI}
+              title="Ask AI about this log using your selected model"
+              className="flex items-center gap-1 rounded-lg border border-purple-500/30 bg-purple-500/10 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-purple-400 hover:bg-purple-500/20 hover:border-purple-500/50 transition-colors cursor-pointer"
+            >
+              <Sparkles className="h-3 w-3" />
+              Ask AI
+            </button>
+          </div>
         )}
       </div>
     </motion.div>

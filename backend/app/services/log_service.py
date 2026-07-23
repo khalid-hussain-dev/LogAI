@@ -583,6 +583,87 @@ async def get_chat_context(
     return "\n".join(context_parts)
 
 
+async def get_model_suggestions(
+    es: AsyncElasticsearch,
+    server_ids: List[str],
+    model: str,
+    limit: int = 5,
+) -> List[Dict[str, Any]]:
+    """
+    Return a list of recent real logs from the user's servers that the
+    selected model is most likely to handle well (based on ML confidence scoring).
+    """
+    if not server_ids:
+        return []
+
+    resp = await es.search(
+        index=INDEX,
+        size=60,
+        query={
+            "bool": {
+                "filter": [
+                    {"terms": {"server_id": server_ids}},
+                    {"terms": {"level": ["critical", "error", "warn"]}},
+                ]
+            }
+        },
+        sort=[{"timestamp": {"order": "desc"}}],
+    )
+
+    recent_logs = [hit["_source"] for hit in resp["hits"]["hits"]]
+    if not recent_logs:
+        return []
+
+    suggestions = []
+
+    if model in ("cortex", "cortex-adaptive"):
+        for log in recent_logs:
+            msg = log.get("message", "")
+            if not msg or len(msg) < 5:
+                continue
+            result = fallback_ai.predict(msg, exclude_dynamic=(model == "cortex"))
+            if result.get("confidence", 0) > 0.25:
+                suggestions.append({
+                    "message": msg,
+                    "level": log.get("level", "info"),
+                    "service": log.get("service") or log.get("server_name") or "",
+                    "confidence": round(result["confidence"] * 100),
+                })
+            if len(suggestions) >= limit:
+                break
+
+    elif model in ("cortex-prime", "cortex-prime-v2"):
+        model_instance = cortex_prime_v1 if model == "cortex-prime" else cortex_prime_v2
+        for log in recent_logs:
+            msg = log.get("message", "")
+            if not msg or len(msg) < 5:
+                continue
+            result = model_instance.predict(msg)
+            if result.get("confidence", 0) > 0.15:
+                suggestions.append({
+                    "message": msg,
+                    "level": log.get("level", "info"),
+                    "service": log.get("service") or log.get("server_name") or "",
+                    "confidence": round(result["confidence"] * 100),
+                })
+            if len(suggestions) >= limit:
+                break
+
+    else:
+        # deepseek — show any recent critical/error logs
+        for log in recent_logs[:limit]:
+            msg = log.get("message", "")
+            if msg and len(msg) >= 5:
+                suggestions.append({
+                    "message": msg,
+                    "level": log.get("level", "info"),
+                    "service": log.get("service") or log.get("server_name") or "",
+                    "confidence": None,
+                })
+
+    return suggestions
+
+
 async def generate_chat_response(
     es: AsyncElasticsearch,
     server_ids: List[str],
