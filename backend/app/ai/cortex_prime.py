@@ -12,7 +12,7 @@ class CortexPrimeAI:
         self.model_name = f"LogAI Cortex Prime {version}"
         self.dataset_path = os.path.join(
             os.path.dirname(__file__),
-            '..', '..', '..', '..', *relative_path.split('/')
+            '..', '..', '..', *relative_path.split('/')
         )
         self.entries = []
         self.raw_logs = []
