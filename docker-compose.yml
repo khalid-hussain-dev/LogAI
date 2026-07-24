@@ -158,6 +158,20 @@ services:
     networks:
       - logai_network
 
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_BACKEND_URL: http://54.165.64.151.nip.io
+        VITE_AUTH_SERVICE_URL: http://54.165.64.151.nip.io
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+      - auth-service
+    networks:
+      - logai_network
   # ── Kibana (optional, use: docker-compose --profile tools up kibana) ──
   kibana:
     image: docker.elastic.co/kibana/kibana:8.13.0
