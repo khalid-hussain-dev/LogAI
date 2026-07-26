@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { Send, Trash2, Copy, Check, RefreshCw, Zap, Brain } from 'lucide-react'
+import { Send, Trash2, Copy, Check, RefreshCw, Zap, Brain, X } from 'lucide-react'
 import { authFetch } from '../services/auth'
 import { useAuth } from '../context/AuthContext'
 import { useSearchParams } from 'react-router-dom'
@@ -74,18 +74,21 @@ export default function ChatEngine({ fullHeight = false }) {
   const [isTyping, setIsTyping] = useState(false)
   const [copiedId, setCopiedId] = useState(null)
   const [suggestions, setSuggestions] = useState({ type: 'logs', suggestions: [], keywords: [] })
+  const [showSuggestions, setShowSuggestions] = useState(true)
   const [loadingSuggestions, setLoadingSuggestions] = useState(false)
   const messagesEndRef = useRef(null)
   const [searchParams, setSearchParams] = useSearchParams()
 
   // Persist selected model in localStorage
   const [selectedModel, setSelectedModel] = useState(() => {
-    return localStorage.getItem(MODEL_STORAGE_KEY) || 'deepseek'
+    const stored = localStorage.getItem(MODEL_STORAGE_KEY)
+    return (stored && stored !== 'deepseek' && stored !== 'cortex-adaptive') ? stored : 'cortex'
   })
 
   const handleModelChange = (val) => {
     setSelectedModel(val)
     localStorage.setItem(MODEL_STORAGE_KEY, val)
+    setShowSuggestions(true)
   }
 
   // Auto-send query from URL if present
@@ -152,6 +155,7 @@ export default function ChatEngine({ fullHeight = false }) {
     setMessages(prev => [...prev, userMsg])
     setInputValue('')
     setIsTyping(true)
+    setShowSuggestions(false)
 
     try {
       const res = await authFetch(`${BACKEND_URL}/api/v1/chat`, {
@@ -231,7 +235,7 @@ export default function ChatEngine({ fullHeight = false }) {
     })
   }
 
-  const meta = MODEL_META[selectedModel] || MODEL_META.deepseek
+  const meta = MODEL_META[selectedModel] || MODEL_META.cortex
 
   return (
     <div className={`flex flex-col w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl ${
@@ -246,8 +250,8 @@ export default function ChatEngine({ fullHeight = false }) {
             <Brain className="w-4 h-4" style={{ color: meta.color }} />
           </div>
           <div className="min-w-0">
-            <h2 className="text-sm font-bold text-white tracking-wide">{meta.label}</h2>
-            <p className="text-[10px] text-slate-500 truncate">{meta.desc}</p>
+            <h2 className="text-base font-bold text-white tracking-wide">{meta.label}</h2>
+            <p className="text-xs text-slate-500 truncate">{meta.desc}</p>
           </div>
         </div>
 
@@ -255,19 +259,18 @@ export default function ChatEngine({ fullHeight = false }) {
           <select
             value={selectedModel}
             onChange={(e) => handleModelChange(e.target.value)}
-            className="px-2 py-1 text-[11px] rounded-lg border border-white/10 text-slate-300 focus:outline-none bg-[#050914] cursor-pointer max-w-[190px]"
+            className="px-2 py-1.5 text-sm rounded-lg border border-white/10 text-slate-300 focus:outline-none bg-[#050914] cursor-pointer max-w-[190px]"
           >
-            <option value="deepseek">DeepSeek</option>
             <option value="pulse">LogAI Pulse (Tier 0)</option>
             <option value="cortex">LogAI Cortex (Tier 1)</option>
-            <option value="cortex-adaptive">LogAI Cortex Adaptive (Tier 2)</option>
+            <option value="cortex-adaptive" disabled>LogAI Cortex Adaptive (Coming Soon)</option>
             <option value="cortex-prime">Cortex Prime v1 (Tier 3)</option>
             <option value="cortex-prime-v2">Cortex Prime v2 (Tier 3)</option>
           </select>
 
           <div className="flex items-center gap-1 px-2 py-0.5 rounded-full border" style={{ backgroundColor: `${meta.color}10`, borderColor: `${meta.color}30` }}>
             <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: meta.color }}></span>
-            <span className="text-[9px] font-bold uppercase tracking-wider" style={{ color: meta.color }}>Ready</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: meta.color }}>Ready</span>
           </div>
 
           {messages.length > 0 && (
@@ -287,8 +290,8 @@ export default function ChatEngine({ fullHeight = false }) {
               style={{ backgroundColor: `${meta.color}08`, borderColor: `${meta.color}20` }}>
               <Brain className="w-6 h-6" style={{ color: meta.color }} />
             </div>
-            <h3 className="text-sm font-bold text-white mb-1">LogAI Chat Assistant</h3>
-            <p className="text-xs text-slate-400 mb-4 leading-relaxed">
+            <h3 className="text-base font-bold text-white mb-1">LogAI Chat Assistant</h3>
+            <p className="text-sm text-slate-400 mb-4 leading-relaxed">
               Analyze metrics, explain errors, and get recommended actions for your log events using <strong>{meta.label}</strong>.
             </p>
           </div>
@@ -316,10 +319,10 @@ export default function ChatEngine({ fullHeight = false }) {
                       </button>
                     </div>
                   )}
-                  <div className="text-sm leading-relaxed space-y-1">
+                  <div className="text-base leading-relaxed space-y-1">
                     {isUser ? <p className="whitespace-pre-wrap">{msg.text}</p> : renderFormattedMessage(msg.text)}
                   </div>
-                  <span className={`text-[10px] mt-1.5 block font-semibold uppercase tracking-wider text-right ${isUser ? 'text-blue-200' : 'text-slate-600'}`}>
+                  <span className={`text-xs mt-1.5 block font-semibold uppercase tracking-wider text-right ${isUser ? 'text-blue-200' : 'text-slate-600'}`}>
                     {formatTime(msg.timestamp)}
                   </span>
                 </div>
@@ -349,43 +352,47 @@ export default function ChatEngine({ fullHeight = false }) {
       </div>
 
       {/* Suggested Panel (Always visible above input) */}
-      <div className="px-5 py-3 border-t border-white/[0.07] bg-[#070e1b] flex-shrink-0">
+      {showSuggestions && (
+      <div className="px-5 py-3 border-t border-white/[0.07] bg-[#070e1b] flex-shrink-0 relative">
+        <button onClick={() => setShowSuggestions(false)} className="absolute top-2 right-2 p-1 text-slate-500 hover:text-white rounded-lg hover:bg-white/10 transition-colors cursor-pointer">
+          <X className="w-4 h-4" />
+        </button>
         {selectedModel === 'pulse' ? (
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">Keywords:</span>
+          <div className="flex items-center gap-2 flex-wrap pr-8">
+            <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Keywords:</span>
             {(suggestions.keywords || []).map((kw, i) => (
               <button key={i} onClick={() => handleSend(kw)}
-                className="px-2.5 py-1 rounded-full text-[11px] font-semibold border transition-all cursor-pointer hover:scale-105"
+                className="px-3 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer hover:scale-105"
                 style={{ backgroundColor: `${meta.color}10`, borderColor: `${meta.color}30`, color: meta.color }}>
                 {kw}
               </button>
             ))}
           </div>
         ) : (
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">
+          <div className="pr-8">
+            <div className="flex items-center gap-3 mb-2">
+              <span className="text-xs text-slate-500 font-semibold uppercase tracking-wider">
                 {loadingSuggestions ? 'Scanning logs…' : 'Suggested Logs to Analyze'}
               </span>
-              {loadingSuggestions && <RefreshCw className="w-3 h-3 text-slate-600 animate-spin" />}
+              {loadingSuggestions && <RefreshCw className="w-3.5 h-3.5 text-slate-600 animate-spin" />}
             </div>
             
             {!loadingSuggestions && (suggestions.suggestions || []).length === 0 ? (
-              <p className="text-[10px] text-slate-600">No matching logs in your database for this model. Paste any custom log below.</p>
+              <p className="text-xs text-slate-600">No matching logs in your database for this model. Paste any custom log below.</p>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {(suggestions.suggestions || []).slice(0, 4).map((s, i) => (
                   <button key={i} onClick={() => handleSend(s.message)}
-                    className="text-left px-3 py-2 rounded-xl border border-white/[0.05] bg-white/[0.005] hover:bg-white/[0.02] hover:border-cyan-500/25 transition-all group flex items-start gap-2.5 cursor-pointer max-w-full overflow-hidden">
-                    <span className={`flex-shrink-0 mt-0.5 px-1 rounded text-[8px] font-bold uppercase border ${LEVEL_COLORS[s.level] || LEVEL_COLORS.info}`}>
+                    className="text-left px-3 py-2.5 rounded-xl border border-white/[0.05] bg-white/[0.005] hover:bg-white/[0.02] hover:border-cyan-500/25 transition-all group flex items-start gap-2.5 cursor-pointer max-w-full overflow-hidden">
+                    <span className={`flex-shrink-0 mt-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold uppercase border ${LEVEL_COLORS[s.level] || LEVEL_COLORS.info}`}>
                       {s.level}
                     </span>
                     <div className="min-w-0 flex-1">
-                      <p className="text-[11px] text-slate-400 font-mono truncate group-hover:text-white transition-colors">{s.message}</p>
-                      <div className="flex items-center gap-2 mt-0.5">
-                        {s.service && <span className="text-[9px] text-slate-600 truncate">{s.service}</span>}
+                      <p className="text-xs text-slate-400 font-mono truncate group-hover:text-white transition-colors">{s.message}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        {s.service && <span className="text-[10px] text-slate-600 truncate">{s.service}</span>}
                         {s.confidence != null && (
-                          <span className="text-[9px] font-semibold flex-shrink-0" style={{ color: meta.color }}>{s.confidence}% match</span>
+                          <span className="text-[10px] font-semibold flex-shrink-0" style={{ color: meta.color }}>{s.confidence}% match</span>
                         )}
                       </div>
                     </div>
@@ -396,6 +403,7 @@ export default function ChatEngine({ fullHeight = false }) {
           </div>
         )}
       </div>
+      )}
 
       {/* Input */}
       <form onSubmit={onSubmit} className="border-t border-white/[0.07] px-5 py-3.5 flex-shrink-0" style={{ backgroundColor: '#0B1220' }}>

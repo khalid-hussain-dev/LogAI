@@ -22,6 +22,8 @@ import {
   Terminal,
   XCircle,
   Zap,
+  Copy,
+  Check,
 } from 'lucide-react'
 import {
   Area,
@@ -298,18 +300,30 @@ function LiveLogRow({ log, index }) {
   const navigate = useNavigate()
   const level = (log.level || 'debug').toLowerCase()
   const style = LEVEL_STYLES[level] || LEVEL_STYLES.debug
+  const [copied, setCopied] = useState(false)
 
   const getRecommendedModel = () => {
     if (level === 'critical') return { key: 'cortex-prime-v2', label: 'Prime v2' }
     if (level === 'error') return { key: 'cortex-prime', label: 'Prime v1' }
-    return { key: 'cortex-adaptive', label: 'Adaptive' }
+    return { key: 'cortex', label: 'Cortex' }
   }
 
   const handleAskAI = (e) => {
     e.stopPropagation()
-    const currentModel = localStorage.getItem('logai_selected_model') || 'deepseek'
+    const currentModel = localStorage.getItem('logai_selected_model') || 'cortex'
     const query = encodeURIComponent(log.message)
     navigate(`/chat?query=${query}&model=${currentModel}`)
+  }
+
+  const handleCopy = async (e) => {
+    e.stopPropagation()
+    try {
+      await navigator.clipboard.writeText(log.message)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch (err) {
+      console.error('Failed to copy log:', err)
+    }
   }
 
   const rec = getRecommendedModel()
@@ -331,9 +345,18 @@ function LiveLogRow({ log, index }) {
       >
         {style.label}
       </span>
-      <div className="min-w-0">
-        <p className="truncate font-mono text-sm text-slate-200">{log.message}</p>
-        <p className="mt-0.5 truncate text-xs text-slate-500">{log.service || log.server_name || 'application'} / {log.host || 'live-node'}</p>
+      <div className="min-w-0 flex items-center justify-between gap-2">
+        <div className="min-w-0 flex-1">
+          <p className="truncate font-mono text-sm text-slate-200">{log.message}</p>
+          <p className="mt-0.5 truncate text-xs text-slate-500">{log.service || log.server_name || 'application'} / {log.host || 'live-node'}</p>
+        </div>
+        <button
+          onClick={handleCopy}
+          title="Copy log to clipboard"
+          className="p-1 rounded border border-white/10 bg-white/[0.02] opacity-0 group-hover:opacity-100 hover:bg-white/10 text-slate-400 hover:text-white transition-all cursor-pointer flex-shrink-0"
+        >
+          {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+        </button>
       </div>
       <div className="justify-self-end flex items-center gap-2">
         <span className="rounded-full border border-white/10 px-2.5 py-1 text-xs text-slate-400">

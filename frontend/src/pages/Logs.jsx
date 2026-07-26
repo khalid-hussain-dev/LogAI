@@ -176,12 +176,12 @@ export default function Logs() {
                           {log.level === 'critical' && (
                             <div className="flex flex-col items-end gap-0.5">
                               <span className="text-[9px] text-slate-600">
-                                rec: {log.level === 'critical' ? 'Prime v2' : log.level === 'error' ? 'Prime v1' : 'Adaptive'}
+                                rec: {log.level === 'critical' ? 'Prime v2' : log.level === 'error' ? 'Prime v1' : 'Cortex'}
                               </span>
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation()
-                                  const currentModel = localStorage.getItem('logai_selected_model') || 'deepseek'
+                                  const currentModel = localStorage.getItem('logai_selected_model') || 'cortex'
                                   const query = encodeURIComponent(log.message)
                                   window.location.href = `/chat?query=${query}&model=${currentModel}`
                                 }}
