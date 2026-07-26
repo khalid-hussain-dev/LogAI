@@ -39,27 +39,41 @@ def _channels_for_server_ids(server_ids: list[str]) -> list[str]:
 
 
 async def _resolve_owned_server_ids(user_id: str, server_id: Optional[str]) -> list[str] | None:
-    """Return owned server ids for a subscription, or None when access is denied."""
+    """Return accessible server ids for a subscription, or None when access is denied."""
     try:
-        owner_uuid = uuid.UUID(str(user_id))
+        user_uuid = uuid.UUID(str(user_id))
         requested_server_uuid = uuid.UUID(str(server_id)) if server_id else None
     except ValueError:
         return None
 
-    conditions = [
-        Server.owner_id == owner_uuid,
-        Server.is_active.is_(True),
-    ]
-    if requested_server_uuid:
-        conditions.append(Server.id == requested_server_uuid)
-
     async with async_session_factory() as session:
-        result = await session.execute(select(Server.id).where(*conditions))
-        server_ids = [str(sid) for sid in result.scalars().all()]
+        # Get all servers the user owns
+        owned_result = await session.execute(
+            select(Server.id)
+            .where(Server.owner_id == user_uuid, Server.is_active == True)
+        )
+        accessible_ids = {str(sid) for sid in owned_result.scalars().all()}
 
-    if requested_server_uuid and not server_ids:
-        return None
-    return server_ids
+        # Get all servers shared with the user
+        try:
+            from app.models.server_member import ServerMember
+            shared_result = await session.execute(
+                select(ServerMember.server_id)
+                .join(Server, Server.id == ServerMember.server_id)
+                .where(ServerMember.user_id == user_uuid, Server.is_active == True)
+            )
+            for sid in shared_result.scalars().all():
+                accessible_ids.add(str(sid))
+        except Exception as e:
+            logger.error(f"Error fetching shared servers: {e}")
+
+    if requested_server_uuid:
+        req_str = str(requested_server_uuid)
+        if req_str not in accessible_ids:
+            return None
+        return [req_str]
+
+    return list(accessible_ids)
 
 
 @router.websocket("/ws")

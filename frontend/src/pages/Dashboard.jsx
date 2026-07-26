@@ -22,6 +22,8 @@ import {
   Terminal,
   XCircle,
   Zap,
+  Copy,
+  Check,
 } from 'lucide-react'
 import {
   Area,
@@ -33,6 +35,7 @@ import {
 } from 'recharts'
 
 import DashboardLayout from '../components/DashboardLayout'
+import MetricTooltip from '../components/MetricTooltip'
 import { SkeletonCard } from '../components/Skeleton'
 import { authFetch } from '../services/auth'
 import { useLogStream } from '../services/logStream'
@@ -298,12 +301,33 @@ function LiveLogRow({ log, index }) {
   const navigate = useNavigate()
   const level = (log.level || 'debug').toLowerCase()
   const style = LEVEL_STYLES[level] || LEVEL_STYLES.debug
-  
+  const [copied, setCopied] = useState(false)
+
+  const getRecommendedModel = () => {
+    if (level === 'critical') return { key: 'cortex-prime-v2', label: 'Prime v2' }
+    if (level === 'error') return { key: 'cortex-prime', label: 'Prime v1' }
+    return { key: 'cortex', label: 'Cortex' }
+  }
+
   const handleAskAI = (e) => {
     e.stopPropagation()
-    const query = encodeURIComponent(`Analyze this critical log from ${log.service || 'system'}: ${log.message}`)
-    navigate(`/chat?query=${query}`)
+    const currentModel = localStorage.getItem('logai_selected_model') || 'cortex'
+    const query = encodeURIComponent(log.message)
+    navigate(`/chat?query=${query}&model=${currentModel}`)
   }
+
+  const handleCopy = async (e) => {
+    e.stopPropagation()
+    try {
+      await navigator.clipboard.writeText(log.message)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch (err) {
+      console.error('Failed to copy log:', err)
+    }
+  }
+
+  const rec = getRecommendedModel()
 
   return (
     <motion.div
@@ -312,7 +336,7 @@ function LiveLogRow({ log, index }) {
       animate={{ opacity: 1, x: 0, scale: 1 }}
       exit={{ opacity: 0, x: 20, scale: 0.98 }}
       transition={{ duration: 0.28, delay: Math.min(index * 0.015, 0.12) }}
-      className="group grid grid-cols-[76px_96px_minmax(0,1fr)_160px] items-center gap-3 border-b border-white/[0.055] px-4 py-3 transition-colors hover:bg-white/[0.035]"
+      className="group grid grid-cols-[76px_96px_minmax(0,1fr)_180px] items-center gap-3 border-b border-white/[0.055] px-4 py-3 transition-colors hover:bg-white/[0.035]"
       style={{ boxShadow: log.anomaly ? style.glow : 'none' }}
     >
       <span className="font-mono text-[12px] text-slate-500">{formatTime(log.timestamp)}</span>
@@ -322,23 +346,35 @@ function LiveLogRow({ log, index }) {
       >
         {style.label}
       </span>
-      <div className="min-w-0">
-        <p className="truncate font-mono text-sm text-slate-200">{log.message}</p>
-        <p className="mt-0.5 truncate text-xs text-slate-500">{log.service || log.server_name || 'application'} / {log.host || 'live-node'}</p>
+      <div className="min-w-0 flex items-center justify-between gap-2">
+        <div className="min-w-0 flex-1">
+          <p className="truncate font-mono text-sm text-slate-200">{log.message}</p>
+          <p className="mt-0.5 truncate text-xs text-slate-500">{log.service || log.server_name || 'application'} / {log.host || 'live-node'}</p>
+        </div>
+        <button
+          onClick={handleCopy}
+          title="Copy log to clipboard"
+          className="p-1 rounded border border-white/10 bg-white/[0.02] opacity-0 group-hover:opacity-100 hover:bg-white/10 text-slate-400 hover:text-white transition-all cursor-pointer flex-shrink-0"
+        >
+          {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+        </button>
       </div>
       <div className="justify-self-end flex items-center gap-2">
         <span className="rounded-full border border-white/10 px-2.5 py-1 text-xs text-slate-400">
           {log.anomaly ? 'AI flagged' : 'streamed'}
         </span>
         {level === 'critical' && (
-          <button 
-            onClick={handleAskAI}
-            title="Ask AI about this log"
-            className="flex items-center gap-1 rounded-lg border border-purple-500/30 bg-purple-500/10 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-purple-400 hover:bg-purple-500/20 hover:border-purple-500/50 transition-colors cursor-pointer"
-          >
-            <Sparkles className="h-3 w-3" />
-            Ask AI
-          </button>
+          <div className="flex flex-col items-end gap-0.5">
+            <span className="text-[9px] text-slate-600">rec: {rec.label}</span>
+            <button
+              onClick={handleAskAI}
+              title="Ask AI about this log using your selected model"
+              className="flex items-center gap-1 rounded-lg border border-purple-500/30 bg-purple-500/10 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-purple-400 hover:bg-purple-500/20 hover:border-purple-500/50 transition-colors cursor-pointer"
+            >
+              <Sparkles className="h-3 w-3" />
+              Ask AI
+            </button>
+          </div>
         )}
       </div>
     </motion.div>
@@ -640,11 +676,15 @@ export default function Dashboard() {
 
               <div className="grid min-w-[320px] grid-cols-2 gap-3">
                 <div className="rounded-2xl border border-white/5 bg-white/[0.02] p-4">
-                  <p className="text-[10px] uppercase font-bold tracking-[0.2em] text-slate-500">Health</p>
+                  <p className="text-[10px] uppercase font-bold tracking-[0.2em] text-slate-500">
+                    Health <MetricTooltip title="Health Score" formula="100 - (Error Rate × W_E) - (Anomaly Penalty) - (Latency Penalty)" description="A composite score representing overall system stability. 100% indicates perfect telemetry with zero errors or anomalies." />
+                  </p>
                   <p className="mt-2 text-3xl font-black text-white">{healthPct}%</p>
                 </div>
                 <div className="rounded-2xl border border-white/5 bg-white/[0.02] p-4">
-                  <p className="text-[10px] uppercase font-bold tracking-[0.2em] text-slate-500">AI State</p>
+                  <p className="text-[10px] uppercase font-bold tracking-[0.2em] text-slate-500">
+                    AI State <MetricTooltip title="AI Intelligence State" description="Indicates whether the multi-tiered AI (Cortex / Prime) is currently monitoring baseline traffic or actively investigating an anomaly cluster." />
+                  </p>
                   <p className="mt-2 text-lg font-black uppercase tracking-wider" style={{ color: totalAnomalies > 0 ? COLORS.warning : COLORS.aiCyan }}>
                     {totalAnomalies > 0 ? 'Detecting' : 'Monitoring'}
                   </p>
@@ -662,9 +702,9 @@ export default function Dashboard() {
           </motion.section>
 
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
-            <StatCard icon={Layers3} label="Logs 24h" value={totalLogs.toLocaleString()} color={COLORS.accentBlue} helper={viewLabel} delay={0.02} />
-            <StatCard icon={AlertCircle} label="Error Rate" value={`${errorRate}%`} color={COLORS.danger} helper={`${totalErrors.toLocaleString()} error events`} delay={0.08} />
-            <StatCard icon={BrainCircuit} label="Anomalies" value={totalAnomalies.toString()} color={COLORS.warning} helper="AI-flagged signals" delay={0.14} />
+            <StatCard icon={Layers3} label={<>Logs 24h <MetricTooltip title="Traffic Volume" description="Total incoming requests per second (RPS) aggregated over the designated time window." /></>} value={totalLogs.toLocaleString()} color={COLORS.accentBlue} helper={viewLabel} delay={0.02} />
+            <StatCard icon={AlertCircle} label={<>Error Rate <MetricTooltip title="Error Rate" formula="(Failed Requests / Total Requests) × 100" description="The percentage of traffic resulting in Critical or Error severity levels." /></>} value={`${errorRate}%`} color={COLORS.danger} helper={`${totalErrors.toLocaleString()} error events`} delay={0.08} />
+            <StatCard icon={BrainCircuit} label={<>Anomalies <MetricTooltip title="Anomaly Count" description="Total volume of anomalous events flagged by the Isolation Forest model due to statistical deviation in traffic patterns, frequency, or payload structure." /></>} value={totalAnomalies.toString()} color={COLORS.warning} helper="AI-flagged signals" delay={0.14} />
             <StatCard icon={ShieldCheck} label="Active Nodes" value={`${activeServers}/${servers.length || 0}`} color={COLORS.success} helper="registered servers" delay={0.2} />
           </div>
 
@@ -758,7 +798,9 @@ export default function Dashboard() {
                 <div className="mt-5 space-y-4">
                   <div>
                     <div className="mb-2 flex items-center justify-between text-xs font-bold uppercase tracking-wider">
-                      <span className="text-slate-400">Confidence</span>
+                      <span className="text-slate-400">
+                        Confidence <MetricTooltip title="AI Confidence Score" formula="P = e^(TF-IDF Cosine Similarity) / Σ(e^(categories))" description="Probability that the AI's Root Cause Hypothesis is correct based on semantic vector matching. High confidence indicates an exact match to known training incidents. Decays with repetitive identical logs to prevent alert fatigue." />
+                      </span>
                       <span className="text-white">{aiConfidence}%</span>
                     </div>
                     <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.04]">

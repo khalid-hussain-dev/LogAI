@@ -60,9 +60,9 @@ function Toggle({ checked, onChange, label, hint }) {
       <button
         type="button"
         onClick={onChange}
-        className={`w-14 h-8 rounded-full transition-colors relative ${checked ? 'bg-blue-500' : 'bg-white/10'}`}
+        className={`w-14 h-8 rounded-full transition-colors relative flex items-center ${checked ? 'bg-blue-500' : 'bg-white/10'}`}
       >
-        <span className={`absolute top-1 w-6 h-6 rounded-full bg-white transition-transform ${checked ? 'translate-x-7' : 'translate-x-1'}`} />
+        <span className={`absolute left-1 w-6 h-6 rounded-full bg-white transition-transform duration-300 ease-in-out ${checked ? 'translate-x-6' : 'translate-x-0'}`} />
       </button>
     </div>
   )

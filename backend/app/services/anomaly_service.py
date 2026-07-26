@@ -120,10 +120,23 @@ class AnomalyService:
         - the hard fallback if training or inference fails
         - a feature signal for the Isolation Forest itself
         """
+        def _with_bias(base_score: float) -> float:
+            """
+            Severity Bias: Prevent Concept Drift. 
+            If a critical error repeats constantly, the unsupervised Isolation Forest 
+            might label it 'normal baseline'. This enforces a mathematical floor.
+            """
+            lvl = level.lower()
+            if lvl == "critical":
+                return max(base_score, 0.75)
+            if lvl == "error":
+                return max(base_score, 0.60)
+            return base_score
+
         statistical_score = self._statistical_score(level, message, meta, server_id)
 
         if not self._ml_enabled:
-            return statistical_score
+            return _with_bias(statistical_score)
 
         try:
             feature_vector = self._extract_features(
@@ -139,23 +152,23 @@ class AnomalyService:
                 "Feature extraction failed for Isolation Forest, using statistical fallback: %s",
                 exc,
             )
-            return statistical_score
+            return _with_bias(statistical_score)
 
         if self._should_train():
             self._fit_model()
 
         if not self._trained or self._model is None or np is None:
-            return statistical_score
+            return _with_bias(statistical_score)
 
         try:
             raw_score = float(self._model.decision_function(feature_vector.reshape(1, -1))[0])
-            return self._normalize_model_score(raw_score)
+            return _with_bias(self._normalize_model_score(raw_score))
         except Exception as exc:
             logger.warning(
                 "Isolation Forest inference failed, using statistical fallback: %s",
                 exc,
             )
-            return statistical_score
+            return _with_bias(statistical_score)
 
     def _extract_features(
         self,

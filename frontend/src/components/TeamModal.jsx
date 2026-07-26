@@ -5,7 +5,7 @@ import khalidPic from '../assets/khalid-hussain-pic.jpg'
 const MEMBERS = [
   {
     name: 'Khalid Hussain',
-    role: 'Backend Engineer',
+    role: 'AI/ML Engineer',
     email: 'sheikhkhalidhussain1234@gmail.com',
     linkedin: 'https://www.linkedin.com/in/khalid-hussain-dev/',
     github: 'https://github.com/khalid-hussain-dev',
@@ -17,7 +17,7 @@ const MEMBERS = [
   },
   {
     name: 'Nauman Khalid',
-    role: 'AI/ML Engineer',
+    role: 'Backend Engineer',
     email: 'nauman1331@gmail.com',
     linkedin: 'https://www.linkedin.com/in/nauman-khalid-58a2692a0/',
     github: null,

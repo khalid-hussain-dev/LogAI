@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { RefreshCw, FileText } from 'lucide-react'
+import { RefreshCw, FileText, Copy, Check, Radio, WifiOff } from 'lucide-react'
 import DashboardLayout from '../components/DashboardLayout'
+import MetricTooltip from '../components/MetricTooltip'
 import { authFetch } from '../services/auth'
+import { useLogStream } from '../services/logStream'
 import { SkeletonTable } from '../components/Skeleton'
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || ''
@@ -50,10 +52,45 @@ export default function Logs() {
 
   useEffect(() => { fetchLogs() }, [filters])
 
+  const handleLiveLog = (log) => {
+    if (filters.offset !== 0) return
+    if (filters.server_id && log.server_id !== filters.server_id) return
+    if (filters.level && log.level !== filters.level) return
+    if (filters.search && !log.message.toLowerCase().includes(filters.search.toLowerCase())) return
+    if (filters.anomaly_only && !log.anomaly) return
+    
+    setLogs(prev => {
+      const exists = prev.some(l => l.id === log.id)
+      if (exists) return prev
+      return [log, ...prev].slice(0, filters.limit)
+    })
+    setTotal(prev => prev + 1)
+  }
+
+  const { connectionState } = useLogStream({
+    serverId: filters.server_id || null,
+    enabled: true,
+    onLog: handleLiveLog,
+    onAnomaly: handleLiveLog,
+  })
+
   const handleFilter = (key, val) => setFilters(f => ({ ...f, [key]: val, offset: 0 }))
   const formatTime = (ts) => ts ? new Date(typeof ts === 'number' ? ts : parseInt(ts)).toLocaleString() : '—'
   const currentPage = Math.floor(filters.offset / filters.limit) + 1
   const totalPages = Math.ceil(total / filters.limit)
+
+  const [copiedLogId, setCopiedLogId] = useState(null)
+
+  const handleCopy = async (e, log) => {
+    e.stopPropagation()
+    try {
+      await navigator.clipboard.writeText(log.message)
+      setCopiedLogId(log.id)
+      setTimeout(() => setCopiedLogId(null), 2000)
+    } catch (err) {
+      console.error('Failed to copy log:', err)
+    }
+  }
 
   const inputStyle = { backgroundColor: COLORS.background, borderColor: 'rgba(255,255,255,0.1)' }
 
@@ -90,10 +127,16 @@ export default function Logs() {
             <span>Anomalies only</span>
           </label>
           
-          <button onClick={fetchLogs} 
-            className="p-2.5 text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10 border border-transparent hover:border-cyan-500/20 rounded-xl transition-all duration-200 cursor-pointer">
-            <RefreshCw className="w-4.5 h-4.5" />
-          </button>
+          <div className="flex items-center gap-3">
+            <button onClick={fetchLogs} 
+              className="p-2.5 text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10 border border-transparent hover:border-cyan-500/20 rounded-xl transition-all duration-200 cursor-pointer">
+              <RefreshCw className="w-4.5 h-4.5" />
+            </button>
+            <div className={`flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider px-2 py-1.5 rounded-lg border ${connectionState === 'connected' ? 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30' : 'bg-rose-500/10 text-rose-400 border-rose-500/30'}`}>
+              {connectionState === 'connected' ? <Radio className="w-3.5 h-3.5 animate-pulse" /> : <WifiOff className="w-3.5 h-3.5" />}
+              <span className="hidden sm:inline">{connectionState === 'connected' ? 'Live' : 'Reconnecting'}</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -116,11 +159,17 @@ export default function Logs() {
               <thead>
                 <tr className="border-b border-white/5" style={{ backgroundColor: 'rgba(5, 9, 20, 0.4)' }}>
                   <th className="py-4 px-5 text-xs font-bold uppercase tracking-wider text-slate-500">Timestamp</th>
-                  <th className="py-4 px-5 text-xs font-bold uppercase tracking-wider text-slate-500">Level</th>
+                  <th className="py-4 px-5 text-xs font-bold uppercase tracking-wider text-slate-500">
+                    Level <MetricTooltip title="Severity Level" description="Developer-assigned logging level (e.g., Error, Warn, Info). Statically defined in source code, unaffected by the AI ML models." />
+                  </th>
                   <th className="py-4 px-5 text-xs font-bold uppercase tracking-wider text-slate-500">Message Payload</th>
                   <th className="py-4 px-5 text-xs font-bold uppercase tracking-wider text-slate-500">Service</th>
                   <th className="py-4 px-5 text-xs font-bold uppercase tracking-wider text-slate-500">Source Host</th>
-                  <th className="py-4 px-5 text-xs font-bold uppercase tracking-wider text-slate-500 text-right">Anomaly Score</th>
+                  <th className="py-4 px-5 text-xs font-bold uppercase tracking-wider text-slate-500 text-right">
+                    <div className="flex items-center justify-end">
+                      Anomaly Score <MetricTooltip title="Anomaly Isolation Score" formula="S = (1 - L(x) / c(n)) × 100" description="Calculated by the Isolation Forest model. Indicates the statistical rarity of the log based on frequency, payload length, source velocity, and timing. Low score means normal, high scores indicate severe deviation from baseline behavior." />
+                    </div>
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
@@ -145,24 +194,39 @@ export default function Logs() {
                         </span>
                       </td>
                       <td className="py-3.5 px-5 text-slate-200 font-mono text-sm max-w-[480px] truncate" title={log.message}>
-                        {log.message}
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="truncate">{log.message}</span>
+                          <button
+                            onClick={(e) => handleCopy(e, log)}
+                            title="Copy log to clipboard"
+                            className="p-1 rounded border border-white/10 bg-white/[0.02] opacity-0 group-hover:opacity-100 hover:bg-white/10 text-slate-400 hover:text-white transition-all cursor-pointer flex-shrink-0"
+                          >
+                            {copiedLogId === log.id ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                          </button>
+                        </div>
                       </td>
                       <td className="py-3.5 px-5 text-slate-400 text-sm font-medium">{log.service || '—'}</td>
                       <td className="py-3.5 px-5 text-slate-400 text-sm font-medium">{log.server_name || '—'}</td>
                       <td className="py-3.5 px-5 text-right whitespace-nowrap">
                         <div className="flex items-center justify-end gap-3">
                           {log.level === 'critical' && (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                const query = encodeURIComponent(`Analyze this critical log from ${log.service || 'system'}: ${log.message}`)
-                                window.location.href = `/chat?query=${query}`
-                              }}
-                              title="Ask AI about this log"
-                              className="flex items-center gap-1 rounded-lg border border-purple-500/30 bg-purple-500/10 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-purple-400 hover:bg-purple-500/20 hover:border-purple-500/50 transition-colors cursor-pointer"
-                            >
-                              Ask AI
-                            </button>
+                            <div className="flex flex-col items-end gap-0.5">
+                              <span className="text-[9px] text-slate-600">
+                                rec: {log.level === 'critical' ? 'Prime v2' : log.level === 'error' ? 'Prime v1' : 'Cortex'}
+                              </span>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  const currentModel = localStorage.getItem('logai_selected_model') || 'cortex'
+                                  const query = encodeURIComponent(log.message)
+                                  window.location.href = `/chat?query=${query}&model=${currentModel}`
+                                }}
+                                title="Ask AI using your selected model"
+                                className="flex items-center gap-1 rounded-lg border border-purple-500/30 bg-purple-500/10 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-purple-400 hover:bg-purple-500/20 hover:border-purple-500/50 transition-colors cursor-pointer"
+                              >
+                                Ask AI
+                              </button>
+                            </div>
                           )}
                           {isAnomaly ? (
                             <span className="inline-flex items-center gap-1.5 text-xs font-bold text-rose-400">
