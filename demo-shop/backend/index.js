@@ -61,19 +61,40 @@ let paymentOutage = false;
 // Chaos Endpoints
 app.post('/api/chaos/toggle-db-lock', (req, res) => {
   dbLocked = !dbLocked;
-  logToLogAI('warn', `Database lock chaos toggled: ${dbLocked}`, { dbLocked });
+  logToLogAI('warn', `Database lock chaos toggled: ${dbLocked}`, { dbLocked, reason: 'manual_test' });
   res.json({ dbLocked });
 });
 
 app.post('/api/chaos/toggle-payment-outage', (req, res) => {
   paymentOutage = !paymentOutage;
-  logToLogAI('warn', `Payment outage chaos toggled: ${paymentOutage}`, { paymentOutage });
+  logToLogAI('warn', `Payment outage chaos toggled: ${paymentOutage}`, { paymentOutage, reason: 'manual_test' });
   res.json({ paymentOutage });
 });
 
 app.post('/api/chaos/crash', (req, res) => {
   logToLogAI('critical', `Manual fatal crash initiated by admin!`, { reason: 'chaos_button' });
   res.json({ message: 'Crashing the server in 500ms...' });
+  setTimeout(() => {
+    process.exit(1);
+  }, 500);
+});
+
+// "Real" Incident Endpoints (No manual/testing keywords)
+app.post('/api/chaos/real-db-lock', (req, res) => {
+  dbLocked = !dbLocked;
+  if (dbLocked) logToLogAI('error', `Database transaction lock timeout on orders table`, { dbLocked, code: 'DB_TX_TIMEOUT' });
+  res.json({ dbLocked });
+});
+
+app.post('/api/chaos/real-payment-outage', (req, res) => {
+  paymentOutage = !paymentOutage;
+  if (paymentOutage) logToLogAI('critical', `Payment gateway connection refused: Stripe API unreachable`, { paymentOutage, code: 'ECONNREFUSED' });
+  res.json({ paymentOutage });
+});
+
+app.post('/api/chaos/real-crash', (req, res) => {
+  logToLogAI('critical', `FATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory`, { reason: 'OOM' });
+  res.json({ message: 'Crashing the server with simulated OOM...' });
   setTimeout(() => {
     process.exit(1);
   }, 500);

@@ -79,6 +79,23 @@ function App() {
     alert('Crash payload sent. The backend is going down in 500ms.');
   };
 
+  const toggleRealDbLock = async () => {
+    const res = await fetch(`${API_URL}/chaos/real-db-lock`, { method: 'POST' });
+    const data = await res.json();
+    setDbLocked(data.dbLocked);
+  };
+
+  const toggleRealPaymentOutage = async () => {
+    const res = await fetch(`${API_URL}/chaos/real-payment-outage`, { method: 'POST' });
+    const data = await res.json();
+    setPaymentOutage(data.paymentOutage);
+  };
+
+  const triggerRealCrash = async () => {
+    fetch(`${API_URL}/chaos/real-crash`, { method: 'POST' });
+    alert('Simulated OOM crash payload sent. Backend crashing in 500ms.');
+  };
+
   const triggerTrafficSpike = async () => {
     alert('Blasting backend with 100 requests...');
     for (let i = 0; i < 100; i++) {
@@ -205,6 +222,37 @@ function App() {
                 <p>Spams the backend with 100 concurrent requests to test ingestion limits.</p>
                 <button className="trigger-btn" onClick={triggerTrafficSpike}>
                   Generate Traffic
+                </button>
+              </div>
+              <div className="chaos-card warning">
+                <h3><AlertTriangle size={18} /> DB Lock (Real Incident)</h3>
+                <p>Throws a database lock timeout organically.</p>
+                <button className={`toggle-btn ${dbLocked ? 'active' : ''}`} onClick={toggleRealDbLock}>
+                  {dbLocked ? 'Disable Real DB Lock' : 'Enable Real DB Lock'}
+                </button>
+              </div>
+
+              <div className="chaos-card error">
+                <h3><XCircle size={18} /> Payment Outage (Real Incident)</h3>
+                <p>Throws a Stripe ECONNREFUSED error organically.</p>
+                <button className={`toggle-btn ${paymentOutage ? 'active' : ''}`} onClick={toggleRealPaymentOutage}>
+                  {paymentOutage ? 'Disable Real Outage' : 'Enable Real Outage'}
+                </button>
+              </div>
+
+              <div className="chaos-card critical">
+                <h3><Skull size={18} /> Fatal Crash (Real Incident)</h3>
+                <p>Throws a JavaScript heap out of memory organic error.</p>
+                <button className="trigger-btn critical" onClick={triggerRealCrash}>
+                  Trigger Real Crash (OOM)
+                </button>
+              </div>
+
+              <div className="chaos-card info">
+                <h3><Zap size={18} /> Traffic Spike (Real Incident)</h3>
+                <p>Generates massive request volume to trigger rate/traffic anomalies.</p>
+                <button className="trigger-btn" onClick={triggerTrafficSpike}>
+                  Simulate Real DDoS
                 </button>
               </div>
             </div>
