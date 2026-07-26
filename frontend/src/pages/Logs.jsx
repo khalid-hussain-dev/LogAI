@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { RefreshCw, FileText, Copy, Check, Radio, WifiOff } from 'lucide-react'
 import DashboardLayout from '../components/DashboardLayout'
+import MetricTooltip from '../components/MetricTooltip'
 import { authFetch } from '../services/auth'
 import { useLogStream } from '../services/logStream'
 import { SkeletonTable } from '../components/Skeleton'
@@ -158,11 +159,17 @@ export default function Logs() {
               <thead>
                 <tr className="border-b border-white/5" style={{ backgroundColor: 'rgba(5, 9, 20, 0.4)' }}>
                   <th className="py-4 px-5 text-xs font-bold uppercase tracking-wider text-slate-500">Timestamp</th>
-                  <th className="py-4 px-5 text-xs font-bold uppercase tracking-wider text-slate-500">Level</th>
+                  <th className="py-4 px-5 text-xs font-bold uppercase tracking-wider text-slate-500">
+                    Level <MetricTooltip title="Severity Level" description="Developer-assigned logging level (e.g., Error, Warn, Info). Statically defined in source code, unaffected by the AI ML models." />
+                  </th>
                   <th className="py-4 px-5 text-xs font-bold uppercase tracking-wider text-slate-500">Message Payload</th>
                   <th className="py-4 px-5 text-xs font-bold uppercase tracking-wider text-slate-500">Service</th>
                   <th className="py-4 px-5 text-xs font-bold uppercase tracking-wider text-slate-500">Source Host</th>
-                  <th className="py-4 px-5 text-xs font-bold uppercase tracking-wider text-slate-500 text-right">Anomaly Score</th>
+                  <th className="py-4 px-5 text-xs font-bold uppercase tracking-wider text-slate-500 text-right">
+                    <div className="flex items-center justify-end">
+                      Anomaly Score <MetricTooltip title="Anomaly Isolation Score" formula="S = (1 - L(x) / c(n)) × 100" description="Calculated by the Isolation Forest model. Indicates the statistical rarity of the log based on frequency, payload length, source velocity, and timing. Low score means normal, high scores indicate severe deviation from baseline behavior." />
+                    </div>
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">

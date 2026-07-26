@@ -35,6 +35,7 @@ import {
 } from 'recharts'
 
 import DashboardLayout from '../components/DashboardLayout'
+import MetricTooltip from '../components/MetricTooltip'
 import { SkeletonCard } from '../components/Skeleton'
 import { authFetch } from '../services/auth'
 import { useLogStream } from '../services/logStream'
@@ -675,11 +676,15 @@ export default function Dashboard() {
 
               <div className="grid min-w-[320px] grid-cols-2 gap-3">
                 <div className="rounded-2xl border border-white/5 bg-white/[0.02] p-4">
-                  <p className="text-[10px] uppercase font-bold tracking-[0.2em] text-slate-500">Health</p>
+                  <p className="text-[10px] uppercase font-bold tracking-[0.2em] text-slate-500">
+                    Health <MetricTooltip title="Health Score" formula="100 - (Error Rate × W_E) - (Anomaly Penalty) - (Latency Penalty)" description="A composite score representing overall system stability. 100% indicates perfect telemetry with zero errors or anomalies." />
+                  </p>
                   <p className="mt-2 text-3xl font-black text-white">{healthPct}%</p>
                 </div>
                 <div className="rounded-2xl border border-white/5 bg-white/[0.02] p-4">
-                  <p className="text-[10px] uppercase font-bold tracking-[0.2em] text-slate-500">AI State</p>
+                  <p className="text-[10px] uppercase font-bold tracking-[0.2em] text-slate-500">
+                    AI State <MetricTooltip title="AI Intelligence State" description="Indicates whether the multi-tiered AI (Cortex / Prime) is currently monitoring baseline traffic or actively investigating an anomaly cluster." />
+                  </p>
                   <p className="mt-2 text-lg font-black uppercase tracking-wider" style={{ color: totalAnomalies > 0 ? COLORS.warning : COLORS.aiCyan }}>
                     {totalAnomalies > 0 ? 'Detecting' : 'Monitoring'}
                   </p>
@@ -697,9 +702,9 @@ export default function Dashboard() {
           </motion.section>
 
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
-            <StatCard icon={Layers3} label="Logs 24h" value={totalLogs.toLocaleString()} color={COLORS.accentBlue} helper={viewLabel} delay={0.02} />
-            <StatCard icon={AlertCircle} label="Error Rate" value={`${errorRate}%`} color={COLORS.danger} helper={`${totalErrors.toLocaleString()} error events`} delay={0.08} />
-            <StatCard icon={BrainCircuit} label="Anomalies" value={totalAnomalies.toString()} color={COLORS.warning} helper="AI-flagged signals" delay={0.14} />
+            <StatCard icon={Layers3} label={<>Logs 24h <MetricTooltip title="Traffic Volume" description="Total incoming requests per second (RPS) aggregated over the designated time window." /></>} value={totalLogs.toLocaleString()} color={COLORS.accentBlue} helper={viewLabel} delay={0.02} />
+            <StatCard icon={AlertCircle} label={<>Error Rate <MetricTooltip title="Error Rate" formula="(Failed Requests / Total Requests) × 100" description="The percentage of traffic resulting in Critical or Error severity levels." /></>} value={`${errorRate}%`} color={COLORS.danger} helper={`${totalErrors.toLocaleString()} error events`} delay={0.08} />
+            <StatCard icon={BrainCircuit} label={<>Anomalies <MetricTooltip title="Anomaly Count" description="Total volume of anomalous events flagged by the Isolation Forest model due to statistical deviation in traffic patterns, frequency, or payload structure." /></>} value={totalAnomalies.toString()} color={COLORS.warning} helper="AI-flagged signals" delay={0.14} />
             <StatCard icon={ShieldCheck} label="Active Nodes" value={`${activeServers}/${servers.length || 0}`} color={COLORS.success} helper="registered servers" delay={0.2} />
           </div>
 
@@ -793,7 +798,9 @@ export default function Dashboard() {
                 <div className="mt-5 space-y-4">
                   <div>
                     <div className="mb-2 flex items-center justify-between text-xs font-bold uppercase tracking-wider">
-                      <span className="text-slate-400">Confidence</span>
+                      <span className="text-slate-400">
+                        Confidence <MetricTooltip title="AI Confidence Score" formula="P = e^(TF-IDF Cosine Similarity) / Σ(e^(categories))" description="Probability that the AI's Root Cause Hypothesis is correct based on semantic vector matching. High confidence indicates an exact match to known training incidents. Decays with repetitive identical logs to prevent alert fatigue." />
+                      </span>
                       <span className="text-white">{aiConfidence}%</span>
                     </div>
                     <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.04]">
