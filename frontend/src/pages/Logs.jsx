@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { RefreshCw, FileText, Copy, Check } from 'lucide-react'
+import { RefreshCw, FileText, Copy, Check, Radio, WifiOff } from 'lucide-react'
 import DashboardLayout from '../components/DashboardLayout'
 import { authFetch } from '../services/auth'
+import { useLogStream } from '../services/logStream'
 import { SkeletonTable } from '../components/Skeleton'
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || ''
@@ -49,6 +50,28 @@ export default function Logs() {
   }
 
   useEffect(() => { fetchLogs() }, [filters])
+
+  const handleLiveLog = (log) => {
+    if (filters.offset !== 0) return
+    if (filters.server_id && log.server_id !== filters.server_id) return
+    if (filters.level && log.level !== filters.level) return
+    if (filters.search && !log.message.toLowerCase().includes(filters.search.toLowerCase())) return
+    if (filters.anomaly_only && !log.anomaly) return
+    
+    setLogs(prev => {
+      const exists = prev.some(l => l.id === log.id)
+      if (exists) return prev
+      return [log, ...prev].slice(0, filters.limit)
+    })
+    setTotal(prev => prev + 1)
+  }
+
+  const { connectionState } = useLogStream({
+    serverId: filters.server_id || null,
+    enabled: true,
+    onLog: handleLiveLog,
+    onAnomaly: handleLiveLog,
+  })
 
   const handleFilter = (key, val) => setFilters(f => ({ ...f, [key]: val, offset: 0 }))
   const formatTime = (ts) => ts ? new Date(typeof ts === 'number' ? ts : parseInt(ts)).toLocaleString() : '—'
@@ -103,10 +126,16 @@ export default function Logs() {
             <span>Anomalies only</span>
           </label>
           
-          <button onClick={fetchLogs} 
-            className="p-2.5 text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10 border border-transparent hover:border-cyan-500/20 rounded-xl transition-all duration-200 cursor-pointer">
-            <RefreshCw className="w-4.5 h-4.5" />
-          </button>
+          <div className="flex items-center gap-3">
+            <button onClick={fetchLogs} 
+              className="p-2.5 text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10 border border-transparent hover:border-cyan-500/20 rounded-xl transition-all duration-200 cursor-pointer">
+              <RefreshCw className="w-4.5 h-4.5" />
+            </button>
+            <div className={`flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider px-2 py-1.5 rounded-lg border ${connectionState === 'connected' ? 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30' : 'bg-rose-500/10 text-rose-400 border-rose-500/30'}`}>
+              {connectionState === 'connected' ? <Radio className="w-3.5 h-3.5 animate-pulse" /> : <WifiOff className="w-3.5 h-3.5" />}
+              <span className="hidden sm:inline">{connectionState === 'connected' ? 'Live' : 'Reconnecting'}</span>
+            </div>
+          </div>
         </div>
       </div>
 
