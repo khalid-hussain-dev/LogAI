@@ -149,8 +149,10 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     depends_on:
       - backend
       - auth-service
@@ -162,8 +164,8 @@ services:
     build:
       context: ./frontend
       args:
-        VITE_BACKEND_URL: http://54.165.64.151.nip.io
-        VITE_AUTH_SERVICE_URL: http://54.165.64.151.nip.io
+        VITE_BACKEND_URL: https://mylogai.online
+        VITE_AUTH_SERVICE_URL: https://mylogai.online
     restart: unless-stopped
     ports:
       - "5173:80"
