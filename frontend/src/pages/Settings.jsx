@@ -142,9 +142,9 @@ export default function Settings() {
                 </div>
                 <button
                   onClick={() => setPrefs({ ...prefs, devMode: !prefs.devMode })}
-                  className={`w-12 h-7 rounded-full relative transition-colors cursor-pointer ${prefs.devMode ? 'bg-blue-500' : 'bg-white/10'}`}
+                  className={`w-12 h-7 rounded-full relative transition-colors flex items-center cursor-pointer ${prefs.devMode ? 'bg-blue-500' : 'bg-white/10'}`}
                 >
-                  <span className={`absolute top-0.5 w-6 h-6 rounded-full bg-white transition-transform ${prefs.devMode ? 'translate-x-5' : 'translate-x-0.5'}`} />
+                  <span className={`absolute left-0.5 w-6 h-6 rounded-full bg-white transition-transform duration-300 ease-in-out ${prefs.devMode ? 'translate-x-5' : 'translate-x-0'}`} />
                 </button>
               </div>
 
@@ -179,9 +179,9 @@ export default function Settings() {
               </div>
               <button
                 onClick={() => setPrefs({ ...prefs, audioAlerts: !prefs.audioAlerts })}
-                className={`w-12 h-7 rounded-full relative transition-colors cursor-pointer ${prefs.audioAlerts ? 'bg-emerald-500' : 'bg-white/10'}`}
+                className={`w-12 h-7 rounded-full relative transition-colors flex items-center cursor-pointer ${prefs.audioAlerts ? 'bg-emerald-500' : 'bg-white/10'}`}
               >
-                <span className={`absolute top-0.5 w-6 h-6 rounded-full bg-white transition-transform ${prefs.audioAlerts ? 'translate-x-5' : 'translate-x-0.5'}`} />
+                <span className={`absolute left-0.5 w-6 h-6 rounded-full bg-white transition-transform duration-300 ease-in-out ${prefs.audioAlerts ? 'translate-x-5' : 'translate-x-0'}`} />
               </button>
             </div>
             
