@@ -43,7 +43,7 @@ function LoginForm({ onSwitch }) {
         <motion.div className="flex items-center gap-3 mb-6" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2 }}>
           <img src={brandAssets.mainLogo} alt="LogAI" className="h-14 w-auto rounded-2xl object-contain shadow-2xl shadow-cyan-500/10" />
         </motion.div>
-        <h1 className="text-4xl font-bold text-white">Welcome back</h1>
+        <h1 className="text-4xl font-bold text-white">Welcome bros</h1>
         <p className="text-slate-400 text-lg">Sign in to your LogAI account to continue</p>
       </div>
 
