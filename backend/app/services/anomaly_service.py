@@ -128,9 +128,11 @@ class AnomalyService:
             """
             lvl = level.lower()
             if lvl == "critical":
-                return max(base_score, 0.75)
+                # Organic variance: base score is scaled into the remaining 25% overhead above 75%
+                return 0.75 + (base_score * 0.25)
             if lvl == "error":
-                return max(base_score, 0.60)
+                # Organic variance: base score is scaled into the remaining 40% overhead above 60%
+                return 0.60 + (base_score * 0.40)
             return base_score
 
         statistical_score = self._statistical_score(level, message, meta, server_id)
