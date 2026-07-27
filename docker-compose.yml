@@ -80,6 +80,7 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/app
+      - ./dataset:/dataset:ro
     depends_on:
       postgres:
         condition: service_healthy
@@ -100,6 +101,7 @@ services:
     command: python -m app.workers.stream_worker
     volumes:
       - ./backend:/app
+      - ./dataset:/dataset:ro
     depends_on:
       postgres:
         condition: service_healthy
