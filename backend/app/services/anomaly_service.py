@@ -133,6 +133,10 @@ class AnomalyService:
             if lvl == "error":
                 # Organic variance: base score is scaled into the remaining 40% overhead above 60%
                 return 0.60 + (base_score * 0.40)
+            if lvl == "warn":
+                return min(base_score, 0.70)
+            if lvl == "info" or lvl == "debug":
+                return min(base_score, 0.55)
             return base_score
 
         statistical_score = self._statistical_score(level, message, meta, server_id)
