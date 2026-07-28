@@ -311,6 +311,7 @@ async def get_metrics(
                 ]
             }
         },
+        track_total_hits=True,
         aggs={
             "hourly": {
                 "date_histogram": {
@@ -397,6 +398,7 @@ async def get_dashboard_overview(
                 ]
             }
         },
+        track_total_hits=True,
         aggs={
             "severity": {"terms": {"field": "level", "size": 10}},
             "anomalies": {"filter": {"term": {"anomaly": True}}},
